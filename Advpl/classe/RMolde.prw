@@ -209,6 +209,8 @@ method processStrutura() Class RMolde
 	local cAlStu   := getNextAlias()
 	local cQryStu  := ""
 	local nRecSG1  := 0
+	local oMolde   := nil 
+	local nRecno := 0
 
 	MPSysOpenQuery(cQuery, @cAlias)
 
@@ -220,13 +222,19 @@ method processStrutura() Class RMolde
 			cMistura := aMistura[nI][1]
 			cMolde   := aMistura[nI][2]
 			cQryStu := getSqlMistEst(cProduto,cMistura)
-			MPSysOpenQuery(cQuery, @cAlStu)
-			while (cAlias)->(!EOF())
-
-
-			(cAlias)->(dbSkip())
+			MPSysOpenQuery(cQryStu, @cAlStu)
+			while (cAlStu)->(!EOF())
+				oMolde := self:findMolde(cMolde)
+				nRecno := (cAlias)->ID
+				dbSelectArea("SG1")
+				SG1->(dbSetOrder(1))
+				SG1->(dbGoTo(nRecno))
+				SG1->(recLock("SG1" ,.F.))
+				SG1->G1_QUANT := oMolde:getArea()
+				SG1->(msUnLock())
+			(cAlStu)->(dbSkip())
 			endDo
-
+			(cAlStu)->(dbCloseArea())
 		next nI
 	(cAlias)->(dbSkip())
 	endDo
