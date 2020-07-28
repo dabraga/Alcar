@@ -2,6 +2,11 @@
 #include 'topconn.ch' 
      
 #Define PI 3.14
+
+#DEFINE ADVPLLog_DISABLED "1" // DESABILITA A IMPRESSAO DO LOG 
+#DEFINE ADVPLLog_INFO "2"
+#DEFINE ADVPLLog_DEBUG "3"
+#DEFINE ADVPLLog_CONSOLE "4"
 /*/{Protheus.doc} RMolde
 (long_description)
 @author    danielbraga
@@ -13,6 +18,7 @@
 /*/
 class RMolde 
 	data oModel
+	data oLog 
 	method RMolde() constructor 
 	method list(lSB5)
 	method createTool(oMolde)
@@ -36,7 +42,9 @@ Metodo construtor
 @see (links_or_references)
 /*/
 method RMolde() class RMolde
+	local cfileName := "calculo_massa_"+time() 
 	self:oModel := TMolde():Molde()
+	self:oLog := ADVPLLog():ADVPLLog(cFileName,"Log de rotina",ADVPLLog_INFO)
 return
 
 method list(lSB5) Class RMolde
@@ -46,14 +54,21 @@ method list(lSB5) Class RMolde
 	local oMolde   := nil
 	local oList    := nil
 	default lSB5 := .f. 
+	self:oLog:add(" [RMolde][list] Classe RMolde - Metodo list"  )
 	if lSB5
+		self:oLog:add("[RMolde][list] Usando a informacoes da SB5"  )
 		cQuery := getSqlSB5()
+		self:oLog:add("[RMolde][list] Query SB5"+cQuery  )
 	else 
+		self:oLog:add("[RMolde][list] Usando a informacoes da SH4"  )
 		cQuery := getSqlSH4()
+		self:oLog:add("[RMolde][list] Query SH4"+cQuery  )
 	endIf
-     MPSysOpenQuery(cQuery, @cAlias)
-     
+	self:oLog:add("[RMolde][list] Executando a Query"  )
+    MPSysOpenQuery(cQuery, @cAlias)
+    self:oLog:add("[RMolde][list] fim da Executando a Query"  )
      if (cAlias)->(!EOF())
+		self:oLog:add("[RMolde][list] Iniciando o processamento da query"  )
      	while (cAlias)->(!EOF())
      		oMolde := TMolde():Molde()
      		oMolde:setCodigo(    (cAlias)->CODIGO)
@@ -64,7 +79,9 @@ method list(lSB5) Class RMolde
      		oHash:set(oMolde:getCodigo(), oMolde)
      	(cAlias)->(dbSkip())
      	endDo
+		self:oLog:add("[RMolde][list] fim  o processamento da query"  )
      	oHash:list(@oList)
+		self:oLog:add("[RMolde][list] gerando a lista dos moldes"  )
      	oHash:Clean()
      endIf
 
@@ -75,14 +92,16 @@ method createTool(oMolde) Class RMolde
 	local cRet   := ""
 	local cChave := xFilial("SH4")+padR(oMolde:getCodigo(),tamSx3("H4_ZZCODMD")[1])
 
-
+	self:oLog:add("[RMolde][createTool] Inicando a criacao do molde da MATA620"  )
 	 
 	dbSelectArea("SH4")
 	SH4->(dbSetOrder(2))
 	if SH4->(dbSeek(cChave))
+		self:oLog:add("[RMolde][createTool] Molde "+oMolde:getCodigo()+" encontrado -  alteracao "  )
 		oModel:SetOperation(4)
 		oModel:Activate()
 	else 
+		self:oLog:add("[RMolde][createTool] Molde "+oMolde:getCodigo()+" nao encontrado -  inclusao  "  )
 		oModel:SetOperation(3)
 		oModel:Activate()
 		oModel:SetValue( 'SH4MASTER'    , 'H4_CODIGO'  , GetSXENum("SH4","H4_CODIGO" ) ) 
@@ -98,10 +117,11 @@ method createTool(oMolde) Class RMolde
     if oModel:VldData()
         oModel:CommitData()
         oModel:DeActivate()   
+		self:oLog:add("[RMolde][createTool] Incluido com successo o molde "+allTrim(oMolde:getCodigo()))
     else 
         
         cRet := setMsgError(oModel)
-       
+		self:oLog:add("[RMolde][createTool] Erro na inclusao/alteracao  "+cRet  )
     endIf
 
 
@@ -113,8 +133,9 @@ method processTool() Class RMolde
 	local nI := 0 
 	local oMolde := nil
 	local cRet   := ""
-	
+	self:oLog:add("[RMolde][processTool] Iniciando o processo de criacao do molde "  )
 	for nI:=1 to len(oList)
+		self:oLog:add("[RMolde][processTool] Lendo molde  "  )
 		oMolde := oList[nI,2]
 		cRet := self:createTool(oMolde)
 		if !empty(cRet)
@@ -123,16 +144,18 @@ method processTool() Class RMolde
 		         {"OK"}, 3)
 		    loop     
 	    endIf
-	
+		self:oLog:add("[RMolde][processTool] finalizando molde  "  )
 	next nI
-
+	self:oLog:add("[RMolde][processTool] fim do processo de criacao do molde  "  )
 return 
+
 method processProduct() Class RMolde 
 	local oList := self:list()
 	local nI := 0 
 	local cRet := "" 
-
+	self:oLog:add("[RMolde][processProduct] Iniciando o processo de atualizao do molde (SB5) "  )
 	for nI:=1 to len(oList)
+		self:oLog:add("[RMolde][processProduct] Lendo o molde "  )
 		oMolde := oList[nI,2]
 		cRet :=  self:updateProduct(oMolde)
 		if !empty(cRet)
@@ -141,8 +164,9 @@ method processProduct() Class RMolde
 		         {"OK"}, 3)
 		    loop     
 	    endIf
+		self:oLog:add("[RMolde][processProduct] finalizando o molde "  )
 	next nI
-
+	self:oLog:add("[RMolde][processProduct] finalizando  o processo de atualizacao do molde (SB5) "  )
 return 
 
 method updateProduct(oMolde) Class RMolde 
@@ -152,31 +176,40 @@ method updateProduct(oMolde) Class RMolde
 	local cRet   := "" 
 	local nI     := 0 
 
+	self:oLog:add("[RMolde][updateProduct] Iniciando  atualizao do molde (SB5) "  )
 	for nI := 1 to 4
 		cQuery := getSqlProduto("B5_ZZMOMI"+cValToChar(nI),oMolde:getCodigo())
 		MPSysOpenQuery(cQuery, @cAlias)
 		if (cAlias)->(!EOF())
-			
+			self:oLog:add("[RMolde][updateProduct] Atualizando molde   "+allTrim(oMolde:getCodigo())  )	
 			oModel:SetOperation(4)
 			oModel:Activate()
 			oModel:SetValue( 'SB5MASTER'    , 'B5_ZZVOMI'+cValToChar(nI)  , oModel:getArea()) 
 			if oModel:VldData()
 				oModel:CommitData()
 				oModel:DeActivate()   
+				self:oLog:add("[RMolde][updateProduct]  molde atualizado com sucesso   "+allTrim(oMolde:getCodigo())  )	
 			else 
 				cRet := setMsgError(oModel)
+				self:oLog:add("[RMolde][updateProduct] Erro na atualizacao molde   "+allTrim(oMolde:getCodigo())  )	
 				exit 
 			endIf
+			self:oLog:add("[RMolde][updateProduct] fim do processamento do  molde   "+allTrim(oMolde:getCodigo())  )	
 			(cAlias)->(dbSkip())
 		endIf
 	next nI
-
+	self:oLog:add("[RMolde][updateProduct] fim da attualizacao dos moldes")
 return cRet
 
 method areaCircle(nDiametro) class RMolde
 	local  nArea  := 0
-
+	
+	self:oLog:add("[RMolde][areaCircle] Calculo  area ")
+	self:oLog:add("[RMolde][areaCircle] Diametro "+ cValToChar(nDiametro))
+	self:oLog:add("[RMolde][areaCircle] PI "+ cValToChar(PI))
 	nArea  :=  (nDiametro * nDiametro) * PI
+	self:oLog:add("[RMolde][areaCircle] PI "+ cValToChar(nArea))
+	self:oLog:add("[RMolde][areaCircle] Fim Calculo  area ")
 return nArea 
 
 method findMolde(cCodigo) class RMolde
@@ -185,16 +218,21 @@ method findMolde(cCodigo) class RMolde
 	local aArea   := SH4->(getArea())
 	dbSelectArea("SH4")
 	SH4->(dbSetOrder(2))
+	self:oLog:add("[RMolde][findMolde] Iniciando a busca do molde  ")
+	self:oLog:add("[RMolde][findMolde] Buscando molde codigo: "+cCodigo)
 	if SH4->(dbSeek(xFilial("SH4")+cCodigo))
+		self:oLog:add("[RMolde][findMolde] Molde encontrado" )
 		oMolde:setCodigo(SH4->H4_CODIGO)
 		oMolde:setDescricao(SH4->H4_DESCRI) 
 		oMolde:setInternoDiametro(SH4->H4_ZZDININ)
 		oMolde:setExternoDiametro(SH4->H4_ZZDINEX)
 		oMolde:setEspessuraPrensa(SH4->H4_ZZESPPR)
 		oMolde:setArea(SH4->H4_ZZAREA)
-
+	else 
+		self:oLog:add("[RMolde][findMolde] Molde encontrado" )
 	endIf
 	SH4->(restArea(aArea))
+	self:oLog:add("[RMolde][findMolde] Finalizando busca do molde" )
 return oMolde
 
 
@@ -212,18 +250,29 @@ method processStrutura() Class RMolde
 	local oMolde   := nil 
 	local nRecno := 0
 
+	self:oLog:add("[RMolde][processStrutura]  Iniciando atualizacao da estrutura" )
+	self:oLog:add("[RMolde][processStrutura]  Query da estrutura"+cQuery )
+	self:oLog:add("[RMolde][processStrutura]  iniciando a execucao da query"  )
 	MPSysOpenQuery(cQuery, @cAlias)
-
+	self:oLog:add("[RMolde][processStrutura]  Finalzando a execucao da query"  )
 	while (cAlias)->(!EOF())
 		cProduto := (cAlias)->G1_COD
+		self:oLog:add("[RMolde][processStrutura]  Atualizacao do produto "+ cProduto )
+		self:oLog:add("[RMolde][processStrutura]  Buscando o molde e mistuda do produto "+ cProduto )
 		aMistura := self:getMistMolde(cProduto)
-
+		self:oLog:add("[RMolde][processStrutura]  finalizando  o molde e mistuda do produto "+ cProduto )
 		for nI:=  1 to len(aMistura)
 			cMistura := aMistura[nI][1]
 			cMolde   := aMistura[nI][2]
+			self:oLog:add("[RMolde][processStrutura]  Iniciando a atualizacao  do molde/Mistura  "+ cMolde+"/"+cMistura )
+			self:oLog:add("[RMolde][processStrutura]  Iniciando a busca do molde /mistura na esturuta")
 			cQryStu := getSqlMistEst(cProduto,cMistura)
+			self:oLog:add("[RMolde][processStrutura]  Query de busca do molde /mistura na esturuta"+cQryStu)
+			self:oLog:add("[RMolde][processStrutura]  Iniciando a execucao da query" )
 			MPSysOpenQuery(cQryStu, @cAlStu)
+			self:oLog:add("[RMolde][processStrutura]  finalizando a execucao da query" )
 			while (cAlStu)->(!EOF())
+				self:oLog:add("[RMolde][processStrutura]  Iniciando a alteracao do molde  "+ cMolde)
 				oMolde := self:findMolde(cMolde)
 				nRecno := (cAlias)->ID
 				dbSelectArea("SG1")
@@ -232,13 +281,17 @@ method processStrutura() Class RMolde
 				SG1->(recLock("SG1" ,.F.))
 				SG1->G1_QUANT := oMolde:getArea()
 				SG1->(msUnLock())
+				self:oLog:add("[RMolde][processStrutura]  Alterando o G1_QUANT  para "+ oMolde:getArea())
+				self:oLog:add("[RMolde][processStrutura]  Finalizando a alteracao do molde"+ cMolde )
 			(cAlStu)->(dbSkip())
 			endDo
 			(cAlStu)->(dbCloseArea())
+			self:oLog:add("[RMolde][processStrutura]  finalizando  a atualizacao  do molde/Mistura  "+ cMolde+"/"+cMistura )
 		next nI
 	(cAlias)->(dbSkip())
 	endDo
 	(cAlias)->(dbCloseArea())
+	self:oLog:add("[RMolde][processStrutura]  finalizando atualizacao da estrutura" )
 return 
 
 method  getMistMolde(cProduto) class RMolde 
@@ -253,9 +306,11 @@ method  getMistMolde(cProduto) class RMolde
 
 	dbSelectArea("SB5")
 	SB5->(dbSetOrder(1))
+	self:oLog:add("[RMolde][getMistMolde]  Iniciando a busca do Molde/Mistura do produto "+cProduto )
 	if SB5->(dbSeek(xFilial("SB5")+cProduto ))
 		while SB5->(!EOf()) .and. SB5->B5_COD == cProduto
-
+			self:oLog:add("[RMolde][getMistMolde]  Acho o Molde/Mistura do produto "+cProduto )
+			self:oLog:add("[RMolde][getMistMolde]  processando o Molde/Mistura do produto "+cProduto )
 			for nI:= 1 to nQtdMist
 
 				nFieldPos := SB5->(FieldPos("B5_ZZMIST"+cValToChar(nI)))
@@ -274,6 +329,7 @@ method  getMistMolde(cProduto) class RMolde
 					aadd(aMistura,{cMistura,cMolde })
 				endif
 			next nI 
+			self:oLog:add("[RMolde][getMistMolde]  Fim do processamento o Molde/Mistura do produto "+cProduto )
 		endDo
 	endIf
 	SB5->(RestArea(aArea))
