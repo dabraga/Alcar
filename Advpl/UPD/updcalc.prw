@@ -24,7 +24,7 @@ Função de update de dicionários para compatibilização
 @since  07/08/2020
 @obs    Gerado por EXPORDIC - V.6.5.0.3 EFS / Upd. V.5.1.0 EFS
 @version 1.0
-/*/
+/*/u_UPDCALC
 //--------------------------------------------------------------------
 User Function UPDCALC( cEmpAmb, cFilAmb )
 

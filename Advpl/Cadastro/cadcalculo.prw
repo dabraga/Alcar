@@ -81,12 +81,40 @@ local oStrctZ08 as object
 local oStrctZ09 as object
 local oStrctZ10 as object
 local oStrctZ11 as object
+local aTrgProd := prodTrg()
+local aTrgMolde := moldeTrg()
+local aTrgFuro  := furoTrg()
+local aTrgVol  :=  volTrg()
 
 oStrctZ08 := FwFormStruct( 1 , 'Z08' , /*bFiltro*/ )
 oStrctZ09 := FwFormStruct( 1 , 'Z09' , /*bFiltro*/ )
 oStrctZ10 := FwFormStruct( 1 , 'Z10' , /*bFiltro*/ )
 oStrctZ11 := FwFormStruct( 1 , 'Z11' , /*bFiltro*/ )
 oModel    := MPFormModel():New( 'MdlMvcZ08' , /*bPre*/ , /*bPos*/, /*bCommit*/, /*bCancel*/ )
+
+oStrctZ08:AddTrigger( ;
+      aTrgProd[1] , ;       // [01] Id do campo de origem
+      aTrgProd[2] , ;       // [02] Id do campo de destino
+      aTrgProd[3] , ;       // [03] Bloco de codigo de validação da execução do gatilho
+      aTrgProd[4] ) 
+
+oStrctZ09:AddTrigger( ;
+      aTrgMolde[1] , ;       // [01] Id do campo de origem
+      aTrgMolde[2] , ;       // [02] Id do campo de destino
+      aTrgMolde[3] , ;       // [03] Bloco de codigo de validação da execução do gatilho
+      aTrgMolde[4] ) 
+oStrctZ09:AddTrigger( ;
+      aTrgFuro[1] , ;       // [01] Id do campo de origem
+      aTrgFuro[2] , ;       // [02] Id do campo de destino
+      aTrgFuro[3] , ;       // [03] Bloco de codigo de validação da execução do gatilho
+      aTrgFuro[4] ) 
+
+oStrctZ09:AddTrigger( ;
+      aTrgVol[1] , ;       // [01] Id do campo de origem
+      aTrgVol[2] , ;       // [02] Id do campo de destino
+      aTrgVol[3] , ;       // [03] Bloco de codigo de validação da execução do gatilho
+      aTrgVol[4] ) 
+oStrctZ08:SetProperty( "Z08_CODIGO" , MODEL_FIELD_INIT,{|| GetSxeNum("Z08","Z08_CODIGO")})
 
 oModel:AddFields( 'M01Z08' , /*Owner*/ , oStrctZ08 , /*bPre*/ , /*bPos*/ , /*bLoad*/ )
 oModel:AddGrid( 'M02Z09' , 'M01Z08' , oStrctZ09 , /*bLinePre*/ , /*bLinePost*/ , /*bPre*/ , /*bLinePost*/ , /*bLoad*/ ) 
@@ -130,6 +158,24 @@ oStrctZ09 := FwFormStruct( 2 , 'Z09' , /*bFiltro*/ )
 oStrctZ10 := FwFormStruct( 2 , 'Z10' , /*bFiltro*/ )
 oStrctZ11 := FwFormStruct( 2 , 'Z11' , /*bFiltro*/ )
 
+
+oStrctZ08:SetProperty( "Z08_PRODUT" , MVC_VIEW_LOOKUP,"SB1")
+oStrctZ08:SetProperty( "Z08_CODIGO" , MVC_VIEW_CANCHANGE,.F.)
+oStrctZ08:SetProperty( "Z08_DESCRI" , MVC_VIEW_CANCHANGE,.F.)
+
+
+oStrctZ09:SetProperty( "Z09_MOLDE"  , MVC_VIEW_LOOKUP,"Z05")
+oStrctZ09:SetProperty( "Z09_FURO"   , MVC_VIEW_LOOKUP ,"Z06")
+oStrctZ09:SetProperty( "Z09_AREA"   , MVC_VIEW_CANCHANGE,.F.)
+oStrctZ09:SetProperty( "Z09_VOLUME" , MVC_VIEW_CANCHANGE,.F.)
+oStrctZ09:SetProperty( "Z09_PESO"   , MVC_VIEW_CANCHANGE,.F.)
+oStrctZ09:SetProperty( "Z09_ITEM"   , MVC_VIEW_CANCHANGE,.F.)
+
+
+oStrctZ10:SetProperty( "Z10_CODMAT" , MVC_VIEW_LOOKUP ,"SB1")
+
+oStrctZ11:SetProperty( "Z11_CODVOL" , MVC_VIEW_LOOKUP ,"Z07")
+
 oView:SetModel( oModel )
 oView:AddField( 'V01Z08' , oStrctZ08 , 'M01Z08' )
 oView:AddGrid( 'V02Z09' , oStrctZ09 , 'M02Z09' )
@@ -147,4 +193,56 @@ oView:SetViewProperty( 'V03Z10' , 'ENABLEDGRIDDETAIL' , { 50 } )
 oView:SetOwnerView( 'V04Z11' , 'VwZ11' )
 oView:SetViewProperty( 'V04Z11' , 'ENABLEDGRIDDETAIL' , { 50 } )
 
+oView:AddIncrementField("V02Z09", "Z09_ITEM")
 return oView
+
+static function prodTrg()
+   local aRet := {}
+   aRet :=  FwStruTrigger("Z08_PRODUT" , "Z08_DESCRI" , "posicione('SB1',1,xFilial('SB1')+fwFldGet('Z08_PRODUT'),'B1_DESC' )", .F., "Z08" )
+
+return aRet
+
+static function moldeTrg()
+   local aRet := {}
+   aRet :=  FwStruTrigger("Z09_MOLDE" , "Z09_AREA" , "u_areaCalc()", .F., "Z09" )
+return aRet
+
+static function furoTrg()
+   local aRet := {}
+   aRet :=  FwStruTrigger("Z09_FURO" , "Z09_AREA" , "u_areaCalc()", .F., "Z09" )
+return aRet
+
+static function volTrg()
+   local aRet := {}
+   aRet :=  FwStruTrigger("Z09_ESPESS" , "Z09_VOLUME" , "u_vbCalc()", .F., "Z09" )
+return aRet
+
+user function areaCalc()
+   
+   local nDiametro :=0
+   local nFuro     := 0
+   local cMolde     := fwFldGet("Z09_MOLDE")
+   local cFuro     := fwFldGet("Z09_FURO")
+   local nArea     := 0
+
+   nDiametro :=  posicione("Z05",1,xFilial("Z05")+cMolde,"Z05_DIAMET"  )
+   nFuro     :=  posicione("Z06",1,xFilial("Z06")+cFuro ,"Z06_FURO"  )
+
+   nArea := u_area(nDiametro , nFuro)
+
+
+return nArea
+
+user function vbCalc()
+   
+
+   local nArea    := 9.0//fwFldGet("Z09_AREA")
+   local nEspessura     := fwFldGet("Z09_ESPESS")
+   local nVolBrut := 0
+
+
+
+   nVolBrut := u_volBruto(nArea,nEspessura)
+
+
+return nVolBrut

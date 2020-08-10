@@ -17,7 +17,27 @@
 			"args": [],
 			"label": "sigafat",
 			"description": ""
+		},
+		{
+			"args": [],
+			"label": "sigapcp",
+			"description": ""
+		},
+		{
+			"args": [],
+			"label": "sigacfg",
+			"description": ""
+		},
+		{
+			"args": [],
+			"label": "apsdu",
+			"description": ""
+		},
+		{
+			"args": [],
+			"label": "admin",
+			"description": ""
 		}
 	],
-	"lastProgramExecuted": "sigafat"
+	"lastProgramExecuted": "sigapcp"
 }

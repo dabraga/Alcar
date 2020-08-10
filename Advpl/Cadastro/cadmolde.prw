@@ -82,6 +82,7 @@ local oStrctZ05 as object
 oStrctZ05 := FwFormStruct( 1 , 'Z05' , /*bFiltro*/ )
 oModel    := MPFormModel():New( 'MdlMvcZ05' , /*bPre*/ , /*bPos*/, /*bCommit*/, /*bCancel*/ )
 
+oStrctZ05:SetProperty( "Z05_CODIGO" , MODEL_FIELD_VALID,{|| EXISTCHAV("Z05",FWFldGet("Z05_CODIGO"),1 )})
 oModel:AddFields( 'M01Z05' , /*Owner*/ , oStrctZ05 , /*bPre*/ , /*bPos*/ , /*bLoad*/ )
 
 if Empty( oModel:GetPrimaryKey() )

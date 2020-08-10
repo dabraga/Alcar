@@ -78,10 +78,25 @@ Definição do modelo de dados
 static function ModelDef()
 local oModel as object
 local oStrctZ07 as object
+local aTrgDim := dimTrg()
+local aTrgEsp := espTrg()
 
 oStrctZ07 := FwFormStruct( 1 , 'Z07' , /*bFiltro*/ )
 oModel    := MPFormModel():New( 'MdlMvcZ07' , /*bPre*/ , /*bPos*/, /*bCommit*/, /*bCancel*/ )
 
+oStrctZ07:SetProperty( "Z07_CODIGO" , MODEL_FIELD_VALID,{|| EXISTCHAV("Z07",FWFldGet("Z07_CODIGO"),1 )})
+
+oStrctZ07:AddTrigger( ;
+      aTrgDim[1] , ;       // [01] Id do campo de origem
+      aTrgDim[2] , ;       // [02] Id do campo de destino
+      aTrgDim[3] , ;       // [03] Bloco de codigo de validação da execução do gatilho
+      aTrgDim[4] )       // [04] Bloco de codigo de execução do gatilho
+
+oStrctZ07:AddTrigger( ;
+      aTrgEsp[1] , ;       // [01] Id do campo de origem
+      aTrgEsp[2] , ;       // [02] Id do campo de destino
+      aTrgEsp[3] , ;       // [03] Bloco de codigo de validação da execução do gatilho
+      aTrgEsp[4] )       // [04] Bloco de codigo de execução do gatilho      
 oModel:AddFields( 'M01Z07' , /*Owner*/ , oStrctZ07 , /*bPre*/ , /*bPos*/ , /*bLoad*/ )
 
 if Empty( oModel:GetPrimaryKey() )
@@ -115,3 +130,17 @@ oView:CreateHorizontalBox( 'VwZ07' , 100 )
 oView:SetOwnerView( 'V01Z07' , 'VwZ07' )
 
 return oView
+
+static function dimTrg()
+
+   local aRet := {}
+   aRet := FwStruTrigger("Z07_DIAMET" ,"Z07_VOLPES", "U_volume(fwFldGet('Z07_DIAMET'),fwFldGet('Z07_ESPESS'))" , .f., "Z07" )
+
+
+return aRet
+
+static function espTrg()
+   local aRet := {}
+   aRet :=  FwStruTrigger("Z07_ESPESS" , "Z07_VOLPES" , "U_volume(fwFldGet('Z07_DIAMET'),fwFldGet('Z07_ESPESS'))", .F., "Z07" )
+
+return aRet
