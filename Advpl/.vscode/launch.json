@@ -37,6 +37,16 @@
 			"args": [],
 			"label": "admin",
 			"description": ""
+		},
+		{
+			"args": [],
+			"label": "sigapvp",
+			"description": ""
+		},
+		{
+			"args": [],
+			"label": "siga",
+			"description": ""
 		}
 	],
 	"lastProgramExecuted": "sigapcp"

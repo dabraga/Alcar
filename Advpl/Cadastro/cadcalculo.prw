@@ -85,13 +85,17 @@ local aTrgProd := prodTrg()
 local aTrgMolde := moldeTrg()
 local aTrgFuro  := furoTrg()
 local aTrgVol  :=  volTrg()
+local aTrgPeso := pesoTrg()
+local aTrgCodMat :=  matProdTrg()
+local aTrgDistMat := distMatTrg()
+
 
 oStrctZ08 := FwFormStruct( 1 , 'Z08' , /*bFiltro*/ )
 oStrctZ09 := FwFormStruct( 1 , 'Z09' , /*bFiltro*/ )
-oStrctZ10 := FwFormStruct( 1 , 'Z10' , /*bFiltro*/ )
-oStrctZ11 := FwFormStruct( 1 , 'Z11' , /*bFiltro*/ )
+//oStrctZ10 := FwFormStruct( 1 , 'Z10' , /*bFiltro*/ )
+//oStrctZ11 := FwFormStruct( 1 , 'Z11' , /*bFiltro*/ )
 oModel    := MPFormModel():New( 'MdlMvcZ08' , /*bPre*/ , /*bPos*/, /*bCommit*/, /*bCancel*/ )
-
+/*
 oStrctZ08:AddTrigger( ;
       aTrgProd[1] , ;       // [01] Id do campo de origem
       aTrgProd[2] , ;       // [02] Id do campo de destino
@@ -114,22 +118,42 @@ oStrctZ09:AddTrigger( ;
       aTrgVol[2] , ;       // [02] Id do campo de destino
       aTrgVol[3] , ;       // [03] Bloco de codigo de validação da execução do gatilho
       aTrgVol[4] ) 
+oStrctZ09:AddTrigger( ;
+      aTrgPeso[1] , ;       // [01] Id do campo de origem
+      aTrgPeso[2] , ;       // [02] Id do campo de destino
+      aTrgPeso[3] , ;       // [03] Bloco de codigo de validação da execução do gatilho
+      aTrgPeso[4] ) 
+
+oStrctZ10:AddTrigger( ;
+      aTrgCodMat[1] , ;       // [01] Id do campo de origem
+      aTrgCodMat[2] , ;       // [02] Id do campo de destino
+      aTrgCodMat[3] , ;       // [03] Bloco de codigo de validação da execução do gatilho
+      aTrgCodMat[4] ) 
+
+oStrctZ10:AddTrigger( ;
+      aTrgDistMat[1] , ;       // [01] Id do campo de origem
+      aTrgDistMat[2] , ;       // [02] Id do campo de destino
+      aTrgDistMat[3] , ;       // [03] Bloco de codigo de validação da execução do gatilho
+      aTrgDistMat[4] ) 
+   
+
+*/
 oStrctZ08:SetProperty( "Z08_CODIGO" , MODEL_FIELD_INIT,{|| GetSxeNum("Z08","Z08_CODIGO")})
 
 oModel:AddFields( 'M01Z08' , /*Owner*/ , oStrctZ08 , /*bPre*/ , /*bPos*/ , /*bLoad*/ )
 oModel:AddGrid( 'M02Z09' , 'M01Z08' , oStrctZ09 , /*bLinePre*/ , /*bLinePost*/ , /*bPre*/ , /*bLinePost*/ , /*bLoad*/ ) 
-oModel:AddGrid( 'M03Z10' , 'M02Z09' , oStrctZ10 , /*bLinePre*/ , /*bLinePost*/ , /*bPre*/ , /*bLinePost*/ , /*bLoad*/ ) 
-oModel:AddGrid( 'M04Z11' , 'M03Z10' , oStrctZ11 , /*bLinePre*/ , /*bLinePost*/ , /*bPre*/ , /*bLinePost*/ , /*bLoad*/ ) 
+//oModel:AddGrid( 'M03Z10' , 'M02Z09' , oStrctZ10 , /*bLinePre*/ ,{ |oModelGrid| U_reCalcMD(oModelGrid,"Z10_MOLDE","Z10_UNID","Z10_VOLPES") } /*bLinePost*/ , /*bPre*/ , /*bLinePost*/ , /*bLoad*/ ) 
+//oModel:AddGrid( 'M04Z11' , 'M03Z10' , oStrctZ11 , /*bLinePre*/ , /*bLinePost*/ , /*bPre*/ , /*bLinePost*/ , /*bLoad*/ ) 
 
 if Empty( oModel:GetPrimaryKey() )
    oModel:SetPrimaryKey({}) //Criar a chave única da tabela
 endif
-oModel:SetRelation(  'M02Z09' , {{ 'Z09_FILIAL' , xFilial( 'Z09') } , { 'Z09_CODIGO' , 'Z08_CODIGO' } } , Z09->( IndexKey(1) ) )
-oModel:SetRelation(  'M03Z10' , {{ 'Z10_FILIAL' , xFilial( 'Z10') } , { 'Z10_CODIGO' , 'Z09_CODIGO' } , { 'Z10_CODPRO' , 'Z09_CODPRO' } } , Z10->( IndexKey(1) ) )
-oModel:SetRelation(  'M04Z11' , {{ 'Z11_FILIAL' , xFilial( 'Z11') } , { 'Z11_CODIGO' , 'Z10_CODIGO' } , { 'Z11_CODPRO' , 'Z10_CODPRO' } } , Z11->( IndexKey(1) ) )
+oModel:SetRelation(  'M02Z09' , {{ 'Z09_FILIAL' , xFilial( 'Z08') } , { 'Z09_CODIGO' , 'Z08_CODIGO' } } , Z09->( IndexKey(1) ) )
+//oModel:SetRelation(  'M03Z10' , {{ 'Z10_FILIAL' , xFilial( 'Z10') } , { 'Z10_CODIGO' , 'Z09_CODIGO' } , { 'Z10_CODPRO' , 'Z09_CODPRO' } } , Z10->( IndexKey(1) ) )
+//oModel:SetRelation(  'M04Z11' , {{ 'Z11_FILIAL' , xFilial( 'Z11') } , { 'Z11_CODIGO' , 'Z10_CODIGO' } , { 'Z11_CODPRO' , 'Z10_CODPRO' } } , Z11->( IndexKey(1) ) )
 oModel:GetModel( 'M02Z09' ):SetUniqueLine( { 'Z09_CODPRO' } )
-oModel:GetModel( 'M03Z10' ):SetUniqueLine( { 'Z10_MOLDE' } )
-oModel:GetModel( 'M04Z11' ):SetUniqueLine( { 'Z11_MOLDE' } )
+//oModel:GetModel( 'M03Z10' ):SetUniqueLine( { 'Z10_MOLDE' } )
+//oModel:GetModel( 'M04Z11' ):SetUniqueLine( { 'Z11_MOLDE' } )
 
 return oModel
 
@@ -155,8 +179,8 @@ oModel    := FwLoadModel( 'cadCalculo' )
 oView     := FwFormView():New() 
 oStrctZ08 := FwFormStruct( 2 , 'Z08' , /*bFiltro*/ )
 oStrctZ09 := FwFormStruct( 2 , 'Z09' , /*bFiltro*/ )
-oStrctZ10 := FwFormStruct( 2 , 'Z10' , /*bFiltro*/ )
-oStrctZ11 := FwFormStruct( 2 , 'Z11' , /*bFiltro*/ )
+//oStrctZ10 := FwFormStruct( 2 , 'Z10' , /*bFiltro*/ )
+//oStrctZ11 := FwFormStruct( 2 , 'Z11' , /*bFiltro*/ )
 
 
 oStrctZ08:SetProperty( "Z08_PRODUT" , MVC_VIEW_LOOKUP,"SB1")
@@ -172,28 +196,29 @@ oStrctZ09:SetProperty( "Z09_PESO"   , MVC_VIEW_CANCHANGE,.F.)
 oStrctZ09:SetProperty( "Z09_ITEM"   , MVC_VIEW_CANCHANGE,.F.)
 
 
-oStrctZ10:SetProperty( "Z10_CODMAT" , MVC_VIEW_LOOKUP ,"SB1")
+//oStrctZ10:SetProperty( "Z10_CODMAT" , MVC_VIEW_LOOKUP ,"SB1")
 
-oStrctZ11:SetProperty( "Z11_CODVOL" , MVC_VIEW_LOOKUP ,"Z07")
+//oStrctZ11:SetProperty( "Z11_CODVOL" , MVC_VIEW_LOOKUP ,"Z07")
 
 oView:SetModel( oModel )
 oView:AddField( 'V01Z08' , oStrctZ08 , 'M01Z08' )
 oView:AddGrid( 'V02Z09' , oStrctZ09 , 'M02Z09' )
-oView:AddGrid( 'V03Z10' , oStrctZ10 , 'M03Z10' )
-oView:AddGrid( 'V04Z11' , oStrctZ11 , 'M04Z11' )
+//oView:AddGrid( 'V03Z10' , oStrctZ10 , 'M03Z10' )
+//oView:AddGrid( 'V04Z11' , oStrctZ11 , 'M04Z11' )
 oView:CreateHorizontalBox( 'VwZ08' , 25 )
 oView:CreateHorizontalBox( 'VwZ09' , 25 )
-oView:CreateHorizontalBox( 'VwZ10' , 25 )
-oView:CreateHorizontalBox( 'VwZ11' , 25 )
+//oView:CreateHorizontalBox( 'VwZ10' , 25 )
+//oView:CreateHorizontalBox( 'VwZ11' , 25 )
 oView:SetOwnerView( 'V01Z08' , 'VwZ08' )
 oView:SetOwnerView( 'V02Z09' , 'VwZ09' )
 oView:SetViewProperty( 'V02Z09' , 'ENABLEDGRIDDETAIL' , { 50 } )
-oView:SetOwnerView( 'V03Z10' , 'VwZ10' )
-oView:SetViewProperty( 'V03Z10' , 'ENABLEDGRIDDETAIL' , { 50 } )
-oView:SetOwnerView( 'V04Z11' , 'VwZ11' )
-oView:SetViewProperty( 'V04Z11' , 'ENABLEDGRIDDETAIL' , { 50 } )
 
-oView:AddIncrementField("V02Z09", "Z09_ITEM")
+//oView:SetOwnerView( 'V03Z10' , 'VwZ10' )
+//oView:SetViewProperty( 'V03Z10' , 'ENABLEDGRIDDETAIL' , { 50 } )
+//oView:SetOwnerView( 'V04Z11' , 'VwZ11' )
+//oView:SetViewProperty( 'V04Z11' , 'ENABLEDGRIDDETAIL' , { 50 } )
+
+//oView:AddIncrementField("V02Z09", "Z09_ITEM")
 return oView
 
 static function prodTrg()
@@ -217,6 +242,24 @@ static function volTrg()
    aRet :=  FwStruTrigger("Z09_ESPESS" , "Z09_VOLUME" , "u_vbCalc()", .F., "Z09" )
 return aRet
 
+static function pesoTrg()
+   local aRet := {}
+   aRet :=  FwStruTrigger("Z09_DENSID" , "Z09_PESO" , "u_pbCalc()", .F., "Z09" )
+return aRet
+
+static function matProdTrg()
+   local aRet := {}
+   aRet :=  FwStruTrigger("Z10_CODMAT" , "Z10_VALOR" , "posicione('SB1',1,xFilial('SB1')+fwFldGet('Z10_CODMAT'),'B1_ZZPSVL' )", .F., "Z10" )
+return aRet
+
+static function distMatTrg()
+   local aRet := {}
+   aRet :=  FwStruTrigger("Z10_DISTRI" , "Z10_VOLPES" , "(fwFldGet('Z10_QTD') * fwFldGet('Z10_VALOR')) *(fwFldGet('Z10_DISTRI')/100) ", .F., "Z10" )
+   
+return aRet
+
+
+
 user function areaCalc()
    
    local nDiametro :=0
@@ -236,8 +279,8 @@ return nArea
 user function vbCalc()
    
 
-   local nArea    := 9.0//fwFldGet("Z09_AREA")
-   local nEspessura     := fwFldGet("Z09_ESPESS")
+   local nArea    := fwFldGet("Z09_AREA")
+   local nEspessura   := fwFldGet("Z09_ESPESS")
    local nVolBrut := 0
 
 
@@ -246,3 +289,17 @@ user function vbCalc()
 
 
 return nVolBrut
+
+user function pbCalc()
+   
+
+   local nVolume        := fwFldGet("Z09_VOLUME")
+   local nDensidade   := fwFldGet("Z09_DENSID")
+   local nPesoBrut := 0
+
+
+
+   nPesoBrut := u_pesoBruto(nVolume,nDensidade)
+
+
+return nPesoBrut
