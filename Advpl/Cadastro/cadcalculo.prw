@@ -81,80 +81,37 @@ local oStrctZ08 as object
 local oStrctZ09 as object
 local oStrctZ10 as object
 local oStrctZ11 as object
-local aTrgProd := prodTrg()
-local aTrgMolde := moldeTrg()
-local aTrgFuro  := furoTrg()
-local aTrgVol  :=  volTrg()
-local aTrgPeso := pesoTrg()
-local aTrgCodMat :=  matProdTrg()
-local aTrgDistMat := distMatTrg()
+
 
 
 oStrctZ08 := FwFormStruct( 1 , 'Z08' , /*bFiltro*/ )
 oStrctZ09 := FwFormStruct( 1 , 'Z09' , /*bFiltro*/ )
-//oStrctZ10 := FwFormStruct( 1 , 'Z10' , /*bFiltro*/ )
-//oStrctZ11 := FwFormStruct( 1 , 'Z11' , /*bFiltro*/ )
+oStrctZ10 := FwFormStruct( 1 , 'Z10' , /*bFiltro*/ )
+oStrctZ11 := FwFormStruct( 1 , 'Z11' , /*bFiltro*/ )
 oModel    := MPFormModel():New( 'MdlMvcZ08' , /*bPre*/ , /*bPos*/, /*bCommit*/, /*bCancel*/ )
-/*
-oStrctZ08:AddTrigger( ;
-      aTrgProd[1] , ;       // [01] Id do campo de origem
-      aTrgProd[2] , ;       // [02] Id do campo de destino
-      aTrgProd[3] , ;       // [03] Bloco de codigo de validação da execução do gatilho
-      aTrgProd[4] ) 
 
-oStrctZ09:AddTrigger( ;
-      aTrgMolde[1] , ;       // [01] Id do campo de origem
-      aTrgMolde[2] , ;       // [02] Id do campo de destino
-      aTrgMolde[3] , ;       // [03] Bloco de codigo de validação da execução do gatilho
-      aTrgMolde[4] ) 
-oStrctZ09:AddTrigger( ;
-      aTrgFuro[1] , ;       // [01] Id do campo de origem
-      aTrgFuro[2] , ;       // [02] Id do campo de destino
-      aTrgFuro[3] , ;       // [03] Bloco de codigo de validação da execução do gatilho
-      aTrgFuro[4] ) 
+Z08Trigger(@oStrctZ08)
+Z09Trigger(@oStrctZ09)
+Z10Trigger(@oStrctZ10)
+Z11Trigger(@oStrctZ11)
 
-oStrctZ09:AddTrigger( ;
-      aTrgVol[1] , ;       // [01] Id do campo de origem
-      aTrgVol[2] , ;       // [02] Id do campo de destino
-      aTrgVol[3] , ;       // [03] Bloco de codigo de validação da execução do gatilho
-      aTrgVol[4] ) 
-oStrctZ09:AddTrigger( ;
-      aTrgPeso[1] , ;       // [01] Id do campo de origem
-      aTrgPeso[2] , ;       // [02] Id do campo de destino
-      aTrgPeso[3] , ;       // [03] Bloco de codigo de validação da execução do gatilho
-      aTrgPeso[4] ) 
-
-oStrctZ10:AddTrigger( ;
-      aTrgCodMat[1] , ;       // [01] Id do campo de origem
-      aTrgCodMat[2] , ;       // [02] Id do campo de destino
-      aTrgCodMat[3] , ;       // [03] Bloco de codigo de validação da execução do gatilho
-      aTrgCodMat[4] ) 
-
-oStrctZ10:AddTrigger( ;
-      aTrgDistMat[1] , ;       // [01] Id do campo de origem
-      aTrgDistMat[2] , ;       // [02] Id do campo de destino
-      aTrgDistMat[3] , ;       // [03] Bloco de codigo de validação da execução do gatilho
-      aTrgDistMat[4] ) 
-   
-
-*/
-oStrctZ08:SetProperty( "Z08_CODIGO" , MODEL_FIELD_INIT,{|| GetSxeNum("Z08","Z08_CODIGO")})
+oStrctZ08:SetProperty( "Z08_CODIGO" , MODEL_FIELD_INIT,{|| Z08CODInit() })
 
 oModel:AddFields( 'M01Z08' , /*Owner*/ , oStrctZ08 , /*bPre*/ , /*bPos*/ , /*bLoad*/ )
 oModel:AddGrid( 'M02Z09' , 'M01Z08' , oStrctZ09 , /*bLinePre*/ , /*bLinePost*/ , /*bPre*/ , /*bLinePost*/ , /*bLoad*/ ) 
-//oModel:AddGrid( 'M03Z10' , 'M02Z09' , oStrctZ10 , /*bLinePre*/ ,{ |oModelGrid| U_reCalcMD(oModelGrid,"Z10_MOLDE","Z10_UNID","Z10_VOLPES") } /*bLinePost*/ , /*bPre*/ , /*bLinePost*/ , /*bLoad*/ ) 
-//oModel:AddGrid( 'M04Z11' , 'M03Z10' , oStrctZ11 , /*bLinePre*/ , /*bLinePost*/ , /*bPre*/ , /*bLinePost*/ , /*bLoad*/ ) 
+oModel:AddGrid( 'M03Z10' , 'M02Z09' , oStrctZ10 , /*bLinePre*/ , /*bLinePost*/ , /*bPre*/ , /*bLinePost*/ , /*bLoad*/ ) 
+oModel:AddGrid( 'M04Z11' , 'M03Z10' , oStrctZ11 , /*bLinePre*/ , /*bLinePost*/ , /*bPre*/ , /*bLinePost*/ , /*bLoad*/ ) 
 
 if Empty( oModel:GetPrimaryKey() )
    oModel:SetPrimaryKey({}) //Criar a chave única da tabela
 endif
-oModel:SetRelation(  'M02Z09' , {{ 'Z09_FILIAL' , xFilial( 'Z08') } , { 'Z09_CODIGO' , 'Z08_CODIGO' } } , Z09->( IndexKey(1) ) )
-//oModel:SetRelation(  'M03Z10' , {{ 'Z10_FILIAL' , xFilial( 'Z10') } , { 'Z10_CODIGO' , 'Z09_CODIGO' } , { 'Z10_CODPRO' , 'Z09_CODPRO' } } , Z10->( IndexKey(1) ) )
-//oModel:SetRelation(  'M04Z11' , {{ 'Z11_FILIAL' , xFilial( 'Z11') } , { 'Z11_CODIGO' , 'Z10_CODIGO' } , { 'Z11_CODPRO' , 'Z10_CODPRO' } } , Z11->( IndexKey(1) ) )
+oModel:SetRelation(  'M02Z09' , {{ 'Z09_FILIAL' , 'xFilial( "Z09")' } , { 'Z09_CODIGO' , 'Z08_CODIGO' } ,{'Z09_CODPRO','Z08_PRODUT'} } , Z09->( IndexKey(1) ) )
+oModel:SetRelation(  'M03Z10' , {{ 'Z10_FILIAL' , 'xFilial( "Z10")' } , { 'Z10_CODIGO' , 'Z08_CODIGO' } , { 'Z10_CODPRO' , 'Z08_PRODUT' },{'Z10_MOLDE','Z09_MOLDE'} } , Z10->( IndexKey(1) ) )
+oModel:SetRelation(  'M04Z11' , {{ 'Z11_FILIAL' , 'xFilial( "Z11")' } , { 'Z11_CODIGO' , 'Z08_CODIGO' } , { 'Z11_CODPRO' , 'Z08_PRODUT' },{'Z11_MOLDE','Z09_MOLDE'}} , Z11->( IndexKey(1) ) )
 oModel:GetModel( 'M02Z09' ):SetUniqueLine( { 'Z09_CODPRO' } )
-//oModel:GetModel( 'M03Z10' ):SetUniqueLine( { 'Z10_MOLDE' } )
-//oModel:GetModel( 'M04Z11' ):SetUniqueLine( { 'Z11_MOLDE' } )
-
+oModel:GetModel( 'M03Z10' ):SetUniqueLine( { 'Z10_CODMAT' } )
+oModel:GetModel( 'M04Z11' ):SetUniqueLine( { 'Z11_CODVOL' } )
+oModel:GetModel( 'M04Z11' ):SetOptional( .T. )
 return oModel
 
 //--------------------------------------------------
@@ -179,8 +136,8 @@ oModel    := FwLoadModel( 'cadCalculo' )
 oView     := FwFormView():New() 
 oStrctZ08 := FwFormStruct( 2 , 'Z08' , /*bFiltro*/ )
 oStrctZ09 := FwFormStruct( 2 , 'Z09' , /*bFiltro*/ )
-//oStrctZ10 := FwFormStruct( 2 , 'Z10' , /*bFiltro*/ )
-//oStrctZ11 := FwFormStruct( 2 , 'Z11' , /*bFiltro*/ )
+oStrctZ10 := FwFormStruct( 2 , 'Z10' , /*bFiltro*/ )
+oStrctZ11 := FwFormStruct( 2 , 'Z11' , /*bFiltro*/ )
 
 
 oStrctZ08:SetProperty( "Z08_PRODUT" , MVC_VIEW_LOOKUP,"SB1")
@@ -196,30 +153,106 @@ oStrctZ09:SetProperty( "Z09_PESO"   , MVC_VIEW_CANCHANGE,.F.)
 oStrctZ09:SetProperty( "Z09_ITEM"   , MVC_VIEW_CANCHANGE,.F.)
 
 
-//oStrctZ10:SetProperty( "Z10_CODMAT" , MVC_VIEW_LOOKUP ,"SB1")
+oStrctZ10:SetProperty( "Z10_CODMAT" , MVC_VIEW_LOOKUP ,"SB1")
+oStrctZ10:SetProperty( "Z10_VOLPES"   , MVC_VIEW_CANCHANGE,.F.)
 
-//oStrctZ11:SetProperty( "Z11_CODVOL" , MVC_VIEW_LOOKUP ,"Z07")
+oStrctZ11:SetProperty( "Z11_CODVOL" , MVC_VIEW_LOOKUP ,"Z07")
+oStrctZ11:SetProperty( "Z11_VOLPES"   , MVC_VIEW_CANCHANGE,.F.)
 
 oView:SetModel( oModel )
 oView:AddField( 'V01Z08' , oStrctZ08 , 'M01Z08' )
 oView:AddGrid( 'V02Z09' , oStrctZ09 , 'M02Z09' )
-//oView:AddGrid( 'V03Z10' , oStrctZ10 , 'M03Z10' )
-//oView:AddGrid( 'V04Z11' , oStrctZ11 , 'M04Z11' )
+oView:AddGrid( 'V03Z10' , oStrctZ10 , 'M03Z10' )
+oView:AddGrid( 'V04Z11' , oStrctZ11 , 'M04Z11' )
 oView:CreateHorizontalBox( 'VwZ08' , 25 )
 oView:CreateHorizontalBox( 'VwZ09' , 25 )
-//oView:CreateHorizontalBox( 'VwZ10' , 25 )
-//oView:CreateHorizontalBox( 'VwZ11' , 25 )
+oView:CreateHorizontalBox( 'VwZ10' , 25 )
+oView:CreateHorizontalBox( 'VwZ11' , 25 )
 oView:SetOwnerView( 'V01Z08' , 'VwZ08' )
 oView:SetOwnerView( 'V02Z09' , 'VwZ09' )
-oView:SetViewProperty( 'V02Z09' , 'ENABLEDGRIDDETAIL' , { 50 } )
+//oView:SetViewProperty( 'V02Z09' , 'ENABLEDGRIDDETAIL' , { 50 } )
 
-//oView:SetOwnerView( 'V03Z10' , 'VwZ10' )
+oView:SetOwnerView( 'V03Z10' , 'VwZ10' )
 //oView:SetViewProperty( 'V03Z10' , 'ENABLEDGRIDDETAIL' , { 50 } )
-//oView:SetOwnerView( 'V04Z11' , 'VwZ11' )
+oView:SetOwnerView( 'V04Z11' , 'VwZ11' )
 //oView:SetViewProperty( 'V04Z11' , 'ENABLEDGRIDDETAIL' , { 50 } )
 
-//oView:AddIncrementField("V02Z09", "Z09_ITEM")
+oView:AddIncrementField("V02Z09", "Z09_ITEM")
 return oView
+
+
+static function Z08Trigger(oStruct)
+   local aTrgProd := prodTrg()
+
+   oStruct:AddTrigger( ;
+      aTrgProd[1] , ;       // [01] Id do campo de origem
+      aTrgProd[2] , ;       // [02] Id do campo de destino
+      aTrgProd[3] , ;       // [03] Bloco de codigo de validação da execução do gatilho
+      aTrgProd[4] ) 
+
+return
+
+static function Z09Trigger(oStruct)
+   local aTrgMolde := moldeTrg()
+   local aTrgFuro  := furoTrg()
+   local aTrgVol  :=  volTrg()
+   local aTrgPeso := pesoTrg()
+  
+   
+oStruct:AddTrigger( ;
+      aTrgMolde[1] , ;       // [01] Id do campo de origem
+      aTrgMolde[2] , ;       // [02] Id do campo de destino
+      aTrgMolde[3] , ;       // [03] Bloco de codigo de validação da execução do gatilho
+      aTrgMolde[4] ) 
+oStruct:AddTrigger( ;
+      aTrgFuro[1] , ;       // [01] Id do campo de origem
+      aTrgFuro[2] , ;       // [02] Id do campo de destino
+      aTrgFuro[3] , ;       // [03] Bloco de codigo de validação da execução do gatilho
+      aTrgFuro[4] ) 
+
+oStruct:AddTrigger( ;
+      aTrgVol[1] , ;       // [01] Id do campo de origem
+      aTrgVol[2] , ;       // [02] Id do campo de destino
+      aTrgVol[3] , ;       // [03] Bloco de codigo de validação da execução do gatilho
+      aTrgVol[4] ) 
+oStruct:AddTrigger( ;
+      aTrgPeso[1] , ;       // [01] Id do campo de origem
+      aTrgPeso[2] , ;       // [02] Id do campo de destino
+      aTrgPeso[3] , ;       // [03] Bloco de codigo de validação da execução do gatilho
+      aTrgPeso[4] ) 
+
+return
+
+static function Z10Trigger(oStruct)
+    local aTrgCodMat :=  matProdTrg()
+    local aTrgDistMat := distMatTrg()
+   oStruct:AddTrigger( ;
+      aTrgCodMat[1] , ;       // [01] Id do campo de origem
+      aTrgCodMat[2] , ;       // [02] Id do campo de destino
+      aTrgCodMat[3] , ;       // [03] Bloco de codigo de validação da execução do gatilho
+      aTrgCodMat[4] ) 
+
+   oStruct:AddTrigger( ;
+      aTrgDistMat[1] , ;       // [01] Id do campo de origem
+      aTrgDistMat[2] , ;       // [02] Id do campo de destino
+      aTrgDistMat[3] , ;       // [03] Bloco de codigo de validação da execução do gatilho
+      aTrgDistMat[4] ) 
+   
+return
+
+
+static function Z11Trigger(oStruct)
+    local aTrgDistVol :=  distVolTrg()
+   
+   oStruct:AddTrigger( ;
+      aTrgDistVol[1] , ;       // [01] Id do campo de origem
+      aTrgDistVol[2] , ;       // [02] Id do campo de destino
+      aTrgDistVol[3] , ;       // [03] Bloco de codigo de validação da execução do gatilho
+      aTrgDistVol[4] ) 
+
+   
+   
+return
 
 static function prodTrg()
    local aRet := {}
@@ -254,11 +287,15 @@ return aRet
 
 static function distMatTrg()
    local aRet := {}
-   aRet :=  FwStruTrigger("Z10_DISTRI" , "Z10_VOLPES" , "(fwFldGet('Z10_QTD') * fwFldGet('Z10_VALOR')) *(fwFldGet('Z10_DISTRI')/100) ", .F., "Z10" )
+   aRet :=  FwStruTrigger("Z10_DISTRI" , "Z10_VOLPES" , "u_z10CalcLine()", .F., "Z10" )
    
 return aRet
 
-
+static function distVolTrg()
+   local aRet := {}
+   aRet :=  FwStruTrigger("Z11_DISTRI" , "Z11_VOLPES" , "u_z11CalcLine()", .F., "Z11" )
+   
+return aRet
 
 user function areaCalc()
    
@@ -303,3 +340,9 @@ user function pbCalc()
 
 
 return nPesoBrut
+
+static function Z08CODInit()
+   local cCodigo := "" 
+   cCodigo :=  GetSxeNum("Z08","Z08_CODIGO")
+   ConfirmSX8()
+return cCodigo

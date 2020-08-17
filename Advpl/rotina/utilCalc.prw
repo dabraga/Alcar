@@ -31,6 +31,37 @@ user function pesoBruto(nVolume,nDensidade)
     nRet := (nVolume * nDensidade)/1000
 return nRet
 
+user function z10CalcLine()
+    local nVolPes:= 0
+    nVolPes := (fwFldGet("Z10_QTD") * fwFldGet("Z10_VALOR" )) *(fwFldGet("Z10_DISTRI")/100) 
+    calcLiquid(fwFldGet("Z10_UNID"),nVolPes)
+
+return nVolPes
+
+user function z11CalcLine()
+    local nVolPes:= 0
+    nVolPes := (fwFldGet("Z11_QUANT") * fwFldGet("Z11_VALOR" )) *(fwFldGet("Z11_DISTRI")/100) 
+    calcLiquid(fwFldGet("Z11_UNID"),nVolPes)
+
+return nVolPes
+
+static function calcLiquid(cTipo,nValor)
+     local nVb := 0 
+     local nPb := 0 
+
+     fwFldPut("Z09_AREA", u_areaCalc())
+     fwFldPut("Z09_VOLUME",u_vbCalc())
+     fwFldPut("Z09_PESO" ,u_pbCalc())
+     nVb := fwFldGet("Z09_VOLUME")
+     nPb := fwFldGet("Z09_PESO")
+    if cTipo == "P"
+        fwFldPut("Z09_PESO",nPb - nValor)
+    else 
+         fwFldPut("Z09_VOLUME",nVb - nValor)
+
+    endIf  
+
+return
 user function reCalcMD(oModelGD,cFldMolde,cFldUnid,cFldValor)
 
     local oModel := FWModelActive()
