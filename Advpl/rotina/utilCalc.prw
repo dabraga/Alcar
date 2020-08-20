@@ -62,6 +62,83 @@ static function calcLiquid(cTipo,nValor)
     endIf  
 
 return
+
+user function Z09ReCalc()
+
+    local oModel := FWModelActive()
+    local oMdZ09 := oModel:getModel("M02Z09")
+    local nI := 0
+    local nPeso :=0
+    local nVolume := 0
+    local nVolTotal :=0
+    local nPesoTotal := 0
+    If oModel:isActive()
+        for nI:= 1 to oMdZ09:Length(.t.)
+                oMdZ09:goLine(nI)
+                fwFldPut("Z09_AREA", u_areaCalc())
+                fwFldPut("Z09_VOLUME",u_vbCalc())
+                fwFldPut("Z09_PESO" ,u_pbCalc())
+                nVolTotal := fwFldGet("Z09_VOLUME")
+                nPesoTotal := fwFldGet("Z09_PESO")
+                cMolde := oMdZ09:getValue("Z09_MOLDE")
+                u_Z10ReCalc(oModel,cMolde,@nPeso,@nVolume)
+                U_Z11ReCalc(oModel,cMolde,@nPeso,@nVolume)
+                nVolTotal-=nVolume
+                nPesoTotal-=nPeso
+                fwFldPut("Z09_VOLUME",nVolTotal)
+                fwFldPut("Z09_PESO" ,nPesoTotal)
+        next nI        
+
+    endIf
+
+
+return
+
+user function Z10ReCalc(oModel,cMolde,nPeso,nVolume)
+    
+    local oMdZ10 := oModel:getModel("M03Z10")
+    local nI     := 0
+   
+
+     If oModel:isActive()
+        for nI:= 1 to oMdZ10:Length(.t.)
+            oMdZ10:goLine(nI)
+            //if cMolde  == oMdZ10:getValue("Z10_MOLDE")
+                if oMdZ10:getValue("Z10_UNID") == "P"
+                    nPeso += oMdZ10:getValue("Z10_VOLPES")
+                else 
+                    nVolume += oMdZ10:getValue("Z10_VOLPES")
+                endIf
+            
+           // endIf
+
+        next nI
+     endIf
+return
+
+user function Z11ReCalc(oModel,cMolde,nPeso,nVolume)
+    
+    local oMdZ11 := oModel:getModel("M04Z11")
+    local nI     := 0
+   
+
+     If oModel:isActive()
+        for nI:= 1 to oMdZ11:Length(.t.)
+            oMdZ11:goLine(nI)
+            //if cMolde  == oMdZ11:getValue("Z11_MOLDE")
+                if oMdZ11:getValue("Z11_UNID") == "P"
+                    nPeso += oMdZ11:getValue("Z11_VOLPES")
+                else 
+                    nVolume += oMdZ11:getValue("Z11_VOLPES")
+                endIf
+            
+            //endIf
+
+        next nI
+     endIf
+return
+
+
 user function reCalcMD(oModelGD,cFldMolde,cFldUnid,cFldValor)
 
     local oModel := FWModelActive()

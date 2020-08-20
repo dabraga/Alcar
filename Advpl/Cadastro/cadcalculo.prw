@@ -95,7 +95,14 @@ Z09Trigger(@oStrctZ09)
 Z10Trigger(@oStrctZ10)
 Z11Trigger(@oStrctZ11)
 
+
 oStrctZ08:SetProperty( "Z08_CODIGO" , MODEL_FIELD_INIT,{|| Z08CODInit() })
+//oStrctZ08:SetProperty( "Z08_PRODUT" , MODEL_FIELD_VALID,{|| u_ValidField("Z08_PRODUT" ) })
+//oStrctZ09:SetProperty( "Z09_MOLDE"  , MODEL_FIELD_VALID,{|| u_ValidField("Z09_MOLDE" ) })
+//oStrctZ09:SetProperty( "Z09_FURO"   , MODEL_FIELD_VALID,{|| u_ValidField("Z09_FURO" ) })
+//oStrctZ10:SetProperty( "Z10_CODMAT" , MODEL_FIELD_VALID,{|| u_ValidField("Z10_CODMAT" ) })
+//oStrctZ11:SetProperty( "Z11_CODVOL" , MODEL_FIELD_VALID,{|| u_ValidField("Z11_CODVOL" ) })
+
 
 oModel:AddFields( 'M01Z08' , /*Owner*/ , oStrctZ08 , /*bPre*/ , /*bPos*/ , /*bLoad*/ )
 oModel:AddGrid( 'M02Z09' , 'M01Z08' , oStrctZ09 , /*bLinePre*/ , /*bLinePost*/ , /*bPre*/ , /*bLinePost*/ , /*bLoad*/ ) 
@@ -108,7 +115,7 @@ endif
 oModel:SetRelation(  'M02Z09' , {{ 'Z09_FILIAL' , 'xFilial( "Z09")' } , { 'Z09_CODIGO' , 'Z08_CODIGO' } ,{'Z09_CODPRO','Z08_PRODUT'} } , Z09->( IndexKey(1) ) )
 oModel:SetRelation(  'M03Z10' , {{ 'Z10_FILIAL' , 'xFilial( "Z10")' } , { 'Z10_CODIGO' , 'Z08_CODIGO' } , { 'Z10_CODPRO' , 'Z08_PRODUT' },{'Z10_MOLDE','Z09_MOLDE'} } , Z10->( IndexKey(1) ) )
 oModel:SetRelation(  'M04Z11' , {{ 'Z11_FILIAL' , 'xFilial( "Z11")' } , { 'Z11_CODIGO' , 'Z08_CODIGO' } , { 'Z11_CODPRO' , 'Z08_PRODUT' },{'Z11_MOLDE','Z09_MOLDE'}} , Z11->( IndexKey(1) ) )
-oModel:GetModel( 'M02Z09' ):SetUniqueLine( { 'Z09_CODPRO' } )
+oModel:GetModel( 'M02Z09' ):SetUniqueLine( { 'Z09_MOLDE' } )
 oModel:GetModel( 'M03Z10' ):SetUniqueLine( { 'Z10_CODMAT' } )
 oModel:GetModel( 'M04Z11' ):SetUniqueLine( { 'Z11_CODVOL' } )
 oModel:GetModel( 'M04Z11' ):SetOptional( .T. )
@@ -142,7 +149,7 @@ oStrctZ11 := FwFormStruct( 2 , 'Z11' , /*bFiltro*/ )
 
 oStrctZ08:SetProperty( "Z08_PRODUT" , MVC_VIEW_LOOKUP,"SB1")
 oStrctZ08:SetProperty( "Z08_CODIGO" , MVC_VIEW_CANCHANGE,.F.)
-oStrctZ08:SetProperty( "Z08_DESCRI" , MVC_VIEW_CANCHANGE,.F.)
+oStrctZ08:SetProperty( "Z08_DESCRI" , MVC_VIEW_CANCHANGE,.T.)
 
 
 oStrctZ09:SetProperty( "Z09_MOLDE"  , MVC_VIEW_LOOKUP,"Z05")
@@ -178,6 +185,7 @@ oView:SetOwnerView( 'V04Z11' , 'VwZ11' )
 //oView:SetViewProperty( 'V04Z11' , 'ENABLEDGRIDDETAIL' , { 50 } )
 
 oView:AddIncrementField("V02Z09", "Z09_ITEM")
+oView:AddUserButton( 'Recalcular', 'CLIPS', {|oView| u_Z09ReCalc()}) 
 return oView
 
 
@@ -346,3 +354,28 @@ static function Z08CODInit()
    cCodigo :=  GetSxeNum("Z08","Z08_CODIGO")
    ConfirmSX8()
 return cCodigo
+
+
+user function ValidField(cField )
+   local cValue := ""
+   if cField == "Z09_MOLDE"
+         cValue :=  posicione("Z05",1,xFilial("Z05")+fwFldGet("Z09_MOLDE"),"Z05_CODIGO")
+   endIf    
+   if cField == "Z09_FURO"
+         cValue :=  posicione("Z06",1,xFilial("Z06")+fwFldGet("Z09_FURO"),"Z06_CODIGO")
+   endIf
+   if cField == "Z11_CODVOL"
+         cValue :=  posicione("Z07",1,xFilial("Z07")+fwFldGet("Z11_CODVOL"),"Z07_CODIGO")
+   endIf
+   if cField == "Z08_PRODUT"
+         cValue :=  posicione("SB1",1,xFilial("SB1")+fwFldGet("Z08_PRODUT"),"B1_COD")
+   endIf
+   if cField == "Z10_CODMAT"
+         cValue :=  posicione("SB1",1,xFilial("SB1")+fwFldGet("Z10_CODMAT"),"B1_COD")
+   endIf
+   if empty(cValue)
+       //Help( ,, 'Help',, 'Registro nao encontrado.', 1, 0 )
+      return .f.
+   endIf
+
+return .t.
