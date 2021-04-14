@@ -47,6 +47,21 @@
 			"args": [],
 			"label": "siga",
 			"description": ""
+		},
+		{
+			"args": [],
+			"label": "aps",
+			"description": ""
+		},
+		{
+			"args": [],
+			"label": "SIGAMDI",
+			"description": ""
+		},
+		{
+			"args": [],
+			"label": "sigacpcp",
+			"description": ""
 		}
 	],
 	"lastProgramExecuted": "sigapcp"

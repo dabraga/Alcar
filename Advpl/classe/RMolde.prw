@@ -24,7 +24,7 @@ class RMolde
 	method createTool(oMolde)
 	method processTool()
 	method areaCircle()
-	method findMolde(cCodigo)
+	method findCalculo(cCodigo)
 	method processProduct()
 	method updateProduct(oMolde)
 	method processStrutura()
@@ -212,28 +212,23 @@ method areaCircle(nDiametro) class RMolde
 	self:oLog:add("[RMolde][areaCircle] Fim Calculo  area ")
 return nArea 
 
-method findMolde(cCodigo) class RMolde
+method findCalculo(cMolde , cProduto) class RMolde
 
-	local oMolde  :=  TMolde():Molde()
-	local aArea   := SH4->(getArea())
-	dbSelectArea("SH4")
-	SH4->(dbSetOrder(2))
-	self:oLog:add("[RMolde][findMolde] Iniciando a busca do molde  ")
-	self:oLog:add("[RMolde][findMolde] Buscando molde codigo: "+cCodigo)
-	if SH4->(dbSeek(xFilial("SH4")+cCodigo))
-		self:oLog:add("[RMolde][findMolde] Molde encontrado" )
-		oMolde:setCodigo(SH4->H4_CODIGO)
-		oMolde:setDescricao(SH4->H4_DESCRI) 
-		oMolde:setInternoDiametro(SH4->H4_ZZDININ)
-		oMolde:setExternoDiametro(SH4->H4_ZZDINEX)
-		oMolde:setEspessuraPrensa(SH4->H4_ZZESPPR)
-		oMolde:setArea(SH4->H4_ZZAREA)
-	else 
-		self:oLog:add("[RMolde][findMolde] Molde encontrado" )
-	endIf
-	SH4->(restArea(aArea))
-	self:oLog:add("[RMolde][findMolde] Finalizando busca do molde" )
-return oMolde
+		local cQuery :=  ""
+		local cAlCalc := getNextAlias()
+		local nPeso   := 0
+		cQuery +=" SELECT Z09.Z09_PESO FROM "+RetSqlName("Z09")+"  Z09 "
+        cQuery +=" WHERE Z09.D_E_L_E_T_!='*' "
+		cQuery +=" AND Z09.Z09_CODPRO = '"+cProduto+"'  "
+		cQuery +=" AND Z09_MOLDE = '"+cMolde+" ' "
+
+		MPSysOpenQuery(cQuery, @cAlCalc)
+
+		if (cAlCalc)->(!EOF())
+				return (cAlCalc)->Z09_PESO
+
+		endIf
+return 0
 
 
 method processStrutura() Class RMolde
@@ -273,15 +268,17 @@ method processStrutura() Class RMolde
 			self:oLog:add("[RMolde][processStrutura]  finalizando a execucao da query" )
 			while (cAlStu)->(!EOF())
 				self:oLog:add("[RMolde][processStrutura]  Iniciando a alteracao do molde  "+ cMolde)
-				oMolde := self:findMolde(cMolde)
+				nQuant := self:findCalculo(cMolde,cProduto)
 				nRecno := (cAlias)->ID
-				dbSelectArea("SG1")
-				SG1->(dbSetOrder(1))
-				SG1->(dbGoTo(nRecno))
-				SG1->(recLock("SG1" ,.F.))
-				SG1->G1_QUANT := oMolde:getArea()
-				SG1->(msUnLock())
-				self:oLog:add("[RMolde][processStrutura]  Alterando o G1_QUANT  para "+ oMolde:getArea())
+				if nQuant > 0
+					dbSelectArea("SG1")
+					SG1->(dbSetOrder(1))
+					SG1->(dbGoTo(nRecno))
+					SG1->(recLock("SG1" ,.F.))
+					SG1->G1_QUANT := nQuant
+					SG1->(msUnLock())
+				endIf 
+				self:oLog:add("[RMolde][processStrutura]  Alterando o G1_QUANT  para "+ cValTochar(nQuant))
 				self:oLog:add("[RMolde][processStrutura]  Finalizando a alteracao do molde"+ cMolde )
 			(cAlStu)->(dbSkip())
 			endDo
@@ -434,7 +431,8 @@ static function setMsgError(oModel)
 	cResp += "Id do campo de erro: " 		+ StrTran( StrTran( AllToChar(aMsgErro[4]), "<", "" ), "-", "" ) + (" ")
 	cResp += "Id do erro: " 				+ StrTran( StrTran( AllToChar(aMsgErro[5]), "<", "" ), "-", "" ) + (" ")
 return  cResp
-user function tsthashmap()
+
+user function JobMolde()
 	local oRMolde := nil
 	RpcClearEnv()
 	RpcSetType(3)

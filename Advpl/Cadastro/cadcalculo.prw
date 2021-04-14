@@ -99,7 +99,7 @@ Z11Trigger(@oStrctZ11)
 oStrctZ08:SetProperty( "Z08_CODIGO" , MODEL_FIELD_INIT,{|| Z08CODInit() })
 //oStrctZ08:SetProperty( "Z08_PRODUT" , MODEL_FIELD_VALID,{|| u_ValidField("Z08_PRODUT" ) })
 //oStrctZ09:SetProperty( "Z09_MOLDE"  , MODEL_FIELD_VALID,{|| u_ValidField("Z09_MOLDE" ) })
-//oStrctZ09:SetProperty( "Z09_FURO"   , MODEL_FIELD_VALID,{|| u_ValidField("Z09_FURO" ) })
+oStrctZ09:SetProperty( "Z09_AREA"      , MODEL_FIELD_WHEN,{|| U_getCalcArea() })
 //oStrctZ10:SetProperty( "Z10_CODMAT" , MODEL_FIELD_VALID,{|| u_ValidField("Z10_CODMAT" ) })
 //oStrctZ11:SetProperty( "Z11_CODVOL" , MODEL_FIELD_VALID,{|| u_ValidField("Z11_CODVOL" ) })
 
@@ -112,11 +112,12 @@ oModel:AddGrid( 'M04Z11' , 'M03Z10' , oStrctZ11 , /*bLinePre*/ , /*bLinePost*/ ,
 if Empty( oModel:GetPrimaryKey() )
    oModel:SetPrimaryKey({}) //Criar a chave única da tabela
 endif
-oModel:SetRelation(  'M02Z09' , {{ 'Z09_FILIAL' , 'xFilial( "Z09")' } , { 'Z09_CODIGO' , 'Z08_CODIGO' } ,{'Z09_CODPRO','Z08_PRODUT'} } , Z09->( IndexKey(1) ) )
+oModel:SetRelation(  'M02Z09' , {{ 'Z09_FILIAL' , 'xFilial( "Z09")' } , { 'Z09_CODIGO' , 'Z08_CODIGO' } , {'Z09_CODPRO'   ,'Z08_PRODUT' } } , Z09->( IndexKey(1) ) )
 oModel:SetRelation(  'M03Z10' , {{ 'Z10_FILIAL' , 'xFilial( "Z10")' } , { 'Z10_CODIGO' , 'Z08_CODIGO' } , { 'Z10_CODPRO' , 'Z08_PRODUT' },{'Z10_MOLDE','Z09_MOLDE'} } , Z10->( IndexKey(1) ) )
 oModel:SetRelation(  'M04Z11' , {{ 'Z11_FILIAL' , 'xFilial( "Z11")' } , { 'Z11_CODIGO' , 'Z08_CODIGO' } , { 'Z11_CODPRO' , 'Z08_PRODUT' },{'Z11_MOLDE','Z09_MOLDE'}} , Z11->( IndexKey(1) ) )
 oModel:GetModel( 'M02Z09' ):SetUniqueLine( { 'Z09_MOLDE' } )
 oModel:GetModel( 'M03Z10' ):SetUniqueLine( { 'Z10_CODMAT' } )
+oModel:GetModel( 'M03Z10' ):SetOptional( .T. )
 oModel:GetModel( 'M04Z11' ):SetUniqueLine( { 'Z11_CODVOL' } )
 oModel:GetModel( 'M04Z11' ):SetOptional( .T. )
 return oModel
@@ -154,7 +155,7 @@ oStrctZ08:SetProperty( "Z08_DESCRI" , MVC_VIEW_CANCHANGE,.T.)
 
 oStrctZ09:SetProperty( "Z09_MOLDE"  , MVC_VIEW_LOOKUP,"Z05")
 oStrctZ09:SetProperty( "Z09_FURO"   , MVC_VIEW_LOOKUP ,"Z06")
-oStrctZ09:SetProperty( "Z09_AREA"   , MVC_VIEW_CANCHANGE,.F.)
+//oStrctZ09:SetProperty( "Z09_AREA"   , MVC_VIEW_CANCHANGE,.f. )
 oStrctZ09:SetProperty( "Z09_VOLUME" , MVC_VIEW_CANCHANGE,.F.)
 oStrctZ09:SetProperty( "Z09_PESO"   , MVC_VIEW_CANCHANGE,.F.)
 oStrctZ09:SetProperty( "Z09_ITEM"   , MVC_VIEW_CANCHANGE,.F.)
@@ -270,12 +271,13 @@ return aRet
 
 static function moldeTrg()
    local aRet := {}
-   aRet :=  FwStruTrigger("Z09_MOLDE" , "Z09_AREA" , "u_areaCalc()", .F., "Z09" )
+
+   aRet :=  FwStruTrigger("Z09_MOLDE" , "Z09_AREA" , "iif(u_getCalcArea(),fwFldget('Z09_AREA') ,  u_areaCalc())", .F., "Z09" )
 return aRet
 
 static function furoTrg()
    local aRet := {}
-   aRet :=  FwStruTrigger("Z09_FURO" , "Z09_AREA" , "u_areaCalc()", .F., "Z09" )
+   aRet :=  FwStruTrigger("Z09_FURO" , "Z09_AREA" , "iif(u_getCalcArea(),fwFldget('Z09_AREA') ,  u_areaCalc())", .F., "Z09" )
 return aRet
 
 static function volTrg()
@@ -379,3 +381,16 @@ user function ValidField(cField )
    endIf
 
 return .t.
+
+user function getCalcArea(cProduto)
+
+      default cProduto := fwFldGet("Z08_PRODUT")
+       dbSelectArea("SB1") 
+      SB1->(dbSetOrder(1))
+      if !empty(cProduto)
+         if SB1->(dbSeek(xFilial("SB1")+cProduto))
+
+               return iif( SB1->B1_ZZCALVL != "1",.t.,.f. )
+         endIf
+      endIf
+   return .F.
