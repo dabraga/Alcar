@@ -115,7 +115,7 @@ endif
 oModel:SetRelation(  'M02Z09' , {{ 'Z09_FILIAL' , 'xFilial( "Z09")' } , { 'Z09_CODIGO' , 'Z08_CODIGO' } , {'Z09_CODPRO'   ,'Z08_PRODUT' } } , Z09->( IndexKey(1) ) )
 oModel:SetRelation(  'M03Z10' , {{ 'Z10_FILIAL' , 'xFilial( "Z10")' } , { 'Z10_CODIGO' , 'Z08_CODIGO' } , { 'Z10_CODPRO' , 'Z08_PRODUT' },{'Z10_MOLDE','Z09_MOLDE'} } , Z10->( IndexKey(1) ) )
 oModel:SetRelation(  'M04Z11' , {{ 'Z11_FILIAL' , 'xFilial( "Z11")' } , { 'Z11_CODIGO' , 'Z08_CODIGO' } , { 'Z11_CODPRO' , 'Z08_PRODUT' },{'Z11_MOLDE','Z09_MOLDE'}} , Z11->( IndexKey(1) ) )
-oModel:GetModel( 'M02Z09' ):SetUniqueLine( { 'Z09_MOLDE' } )
+oModel:GetModel( 'M02Z09' ):SetUniqueLine( {  } )
 oModel:GetModel( 'M03Z10' ):SetUniqueLine( { 'Z10_CODMAT' } )
 oModel:GetModel( 'M03Z10' ):SetOptional( .T. )
 oModel:GetModel( 'M04Z11' ):SetUniqueLine( { 'Z11_CODVOL' } )
@@ -159,6 +159,9 @@ oStrctZ09:SetProperty( "Z09_FURO"   , MVC_VIEW_LOOKUP ,"Z06")
 oStrctZ09:SetProperty( "Z09_VOLUME" , MVC_VIEW_CANCHANGE,.F.)
 oStrctZ09:SetProperty( "Z09_PESO"   , MVC_VIEW_CANCHANGE,.F.)
 oStrctZ09:SetProperty( "Z09_ITEM"   , MVC_VIEW_CANCHANGE,.F.)
+oStrctZ09:SetProperty( "Z09_PRENSA" , MVC_VIEW_CANCHANGE,.F.)
+oStrctZ09:SetProperty( "Z09_MISTUR"   , MVC_VIEW_CANCHANGE,.F.)
+oStrctZ09:SetProperty( "Z09_TIPMIS"   , MVC_VIEW_CANCHANGE,.F.)
 
 
 oStrctZ10:SetProperty( "Z10_CODMAT" , MVC_VIEW_LOOKUP ,"SB1")
@@ -265,7 +268,7 @@ return
 
 static function prodTrg()
    local aRet := {}
-   aRet :=  FwStruTrigger("Z08_PRODUT" , "Z08_DESCRI" , "posicione('SB1',1,xFilial('SB1')+fwFldGet('Z08_PRODUT'),'B1_DESC' )", .F., "Z08" )
+   aRet :=  FwStruTrigger("Z08_PRODUT" , "Z08_DESCRI" , "u_addLineZ09(fwFldGet('Z08_PRODUT')) ", .F., "Z08" )
 
 return aRet
 
@@ -292,7 +295,7 @@ return aRet
 
 static function matProdTrg()
    local aRet := {}
-   aRet :=  FwStruTrigger("Z10_CODMAT" , "Z10_VALOR" , "posicione('SB1',1,xFilial('SB1')+fwFldGet('Z10_CODMAT'),'B1_ZZPSVL' )", .F., "Z10" )
+   aRet :=  FwStruTrigger("Z10_CODMAT" , "Z10_VALOR" , "u_gatB1PSVL()", .F., "Z10" )
 return aRet
 
 static function distMatTrg()
@@ -389,8 +392,51 @@ user function getCalcArea(cProduto)
       SB1->(dbSetOrder(1))
       if !empty(cProduto)
          if SB1->(dbSeek(xFilial("SB1")+cProduto))
-
-               return iif( SB1->B1_ZZCALVL != "1",.t.,.f. )
+               if SB1->(FieldPos("B1_ZZCALVL")) > 0
+                  if !Empty(SB1->B1_ZZCALVL )
+                     return iif( SB1->B1_ZZCALVL != "1",.t.,.f. )
+                  else 
+                     return .f.
+                  endIf   
+               else
+                  return .F.
+               endIF
          endIf
       endIf
-   return .F.
+return .F.
+
+user function addLineZ09(cProduto)
+
+   local oModel := FWModelActive()
+   local oMdZ09 := oModel:getModel("M02Z09")
+   local aLine :={}
+   local aCols := {}
+   local nX    := 0
+
+   dbSelectArea("SB5")
+   SB5->(dbSetOrder(1))
+   if SB5->(dbSeek(xFilial("SB5")+cProduto))
+      if !Empty(SB5->B5_ZZMIST1) 
+         aadd(aCols,{SB5->B5_ZZPRENS,SB5->B5_ZZMIST1,SB5->B5_ZZTPMI1})
+      endIf
+      if !Empty(SB5->B5_ZZMIST2)
+         aadd(aCols,{SB5->B5_ZZPRENS,SB5->B5_ZZMIST2,SB5->B5_ZZTPMI2})
+      endIf 
+      if !Empty(SB5->B5_ZZMIST3) 
+         aadd(aCols,{SB5->B5_ZZPRENS,SB5->B5_ZZMIST3,SB5->B5_ZZTPMI3})
+      endIf
+      if !Empty(SB5->B5_ZZMIST4) 
+         aadd(aCols,{SB5->B5_ZZPRENS,SB5->B5_ZZMIST4,SB5->B5_ZZTPMI4})
+      endIf
+   endIf
+
+    for nX:= 1 to len(aCols)
+           oMdZ09:AddLine()
+           oMdZ09:GoLine( nx )
+           oMdZ09:SetValue('Z09_PRENSA', aCols[nx][1] )
+           oMdZ09:SetValue('Z09_MISTUR', aCols[nx][2] )
+           oMdZ09:SetValue('Z09_TIPMIS', aCols[nx][3] )
+   next nX
+
+
+return posicione('SB1',1,xFilial('SB1')+cProduto,'B1_DESC' )

@@ -1,0 +1,393 @@
+Group NewProject
+	ProjectsCount=11
+	Project CLASSE
+		FoldersCount=1
+		Folder Outros
+			FilesCount=1
+			File \advpl\CLASSE\FSWTEMPLMSG.PRW
+				Type=T
+			End
+		End
+	End
+	Project COM
+		FoldersCount=2
+		Folder PONTO DE ENTRADA
+			FilesCount=8
+			File \advpl\COM\PONTO DE ENTRADA\A020EOK.PRW
+				Type=T
+			End
+			File \advpl\COM\PONTO DE ENTRADA\GQREENTR.PRW
+				Type=T
+			End
+			File \advpl\COM\PONTO DE ENTRADA\M020INC.PRW
+				Type=T
+			End
+			File \advpl\COM\PONTO DE ENTRADA\M030EXC.PRW
+				Type=T
+			End
+			File \advpl\COM\PONTO DE ENTRADA\M030INC.PRW
+				Type=T
+			End
+			File \advpl\COM\PONTO DE ENTRADA\MT100C7C.PRW
+				Type=T
+			End
+			File \advpl\COM\PONTO DE ENTRADA\MT100C7L.PRW
+				Type=T
+			End
+			File \advpl\COM\PONTO DE ENTRADA\SF1100E.PRW
+				Type=T
+			End
+		End
+		Folder Outros
+			FilesCount=0
+		End
+	End
+	Project CTB
+		FoldersCount=2
+		Folder ROTINA
+			FilesCount=2
+			File \advpl\CTB\ROTINA\CTBIMPFC.PRW
+				Type=T
+			End
+			File \advpl\CTB\ROTINA\CTBINCFC.PRW
+				Type=T
+			End
+		End
+		Folder Outros
+			FilesCount=0
+		End
+	End
+	Project EST
+		FoldersCount=3
+		Folder RELATORIO
+			FilesCount=11
+			File \advpl\EST\RELATORIO\ANALITP.PRW
+				Type=T
+			End
+			File \advpl\EST\RELATORIO\COMPXES.PRW
+				Type=T
+			End
+			File \advpl\EST\RELATORIO\DCOMPXES.PRW
+				Type=T
+			End
+			File \advpl\EST\RELATORIO\ENTP3XES.PRW
+				Type=T
+			End
+			File \advpl\EST\RELATORIO\MOVIXES.PRW
+				Type=T
+			End
+			File \advpl\EST\RELATORIO\PRODSXES.PRW
+				Type=T
+			End
+			File \advpl\EST\RELATORIO\REQSXES.PRW
+				Type=T
+			End
+			File \advpl\EST\RELATORIO\TRANPXES.PRW
+				Type=T
+			End
+			File \advpl\EST\RELATORIO\TRANXES.PRW
+				Type=T
+			End
+			File \advpl\EST\RELATORIO\VEND2XES.PRW
+				Type=T
+			End
+			File \advpl\EST\RELATORIO\VENDXES.PRW
+				Type=T
+			End
+		End
+		Folder ROTINA
+			FilesCount=3
+			File \advpl\EST\ROTINA\ALAEST01.PRW
+				Type=T
+			End
+			File \advpl\EST\ROTINA\ANALISE.PRW
+				Type=T
+			End
+			File \advpl\EST\ROTINA\RELANALI.PRW
+				Type=T
+			End
+		End
+		Folder Outros
+			FilesCount=0
+		End
+	End
+	Project FAT
+		FoldersCount=3
+		Folder PONTO DE ENTRADA
+			FilesCount=16
+			File \advpl\FAT\PONTO DE ENTRADA\FT210OPC.PRW
+				Type=T
+			End
+			File \advpl\FAT\PONTO DE ENTRADA\M410FSQL.PRW
+				Type=T
+			End
+			File \advpl\FAT\PONTO DE ENTRADA\M410LIOK.PRW
+				Type=T
+			End
+			File \advpl\FAT\PONTO DE ENTRADA\M410STTS.PRW
+				Type=T
+			End
+			File \advpl\FAT\PONTO DE ENTRADA\M410VRES.PRW
+				Type=T
+			End
+			File \advpl\FAT\PONTO DE ENTRADA\M460FIL.PRW
+				Type=T
+			End
+			File \advpl\FAT\PONTO DE ENTRADA\M460FIM.PRW
+				Type=T
+			End
+			File \advpl\FAT\PONTO DE ENTRADA\MT440AT.PRW
+				Type=T
+			End
+			File \advpl\FAT\PONTO DE ENTRADA\MT440FIL.PRW
+				Type=T
+			End
+			File \advpl\FAT\PONTO DE ENTRADA\MT450QRY.PRW
+				Type=T
+			End
+			File \advpl\FAT\PONTO DE ENTRADA\MTA410T.PRW
+				Type=T
+			End
+			File \advpl\FAT\PONTO DE ENTRADA\MTA440AC.PRW
+				Type=T
+			End
+			File \advpl\FAT\PONTO DE ENTRADA\MTA440C9_PE.PRW
+				Type=T
+			End
+			File \advpl\FAT\PONTO DE ENTRADA\MTA455P.PRW
+				Type=T
+			End
+			File \advpl\FAT\PONTO DE ENTRADA\MTA456P.PRW
+				Type=T
+			End
+			File \advpl\FAT\PONTO DE ENTRADA\SF2520E.PRW
+				Type=T
+			End
+		End
+		Folder ROTINA
+			FilesCount=17
+			File \advpl\FAT\ROTINA\ALFATA01.PRW
+				Type=T
+			End
+			File \advpl\FAT\ROTINA\CLEARSC9.PRW
+				Type=T
+			End
+			File \advpl\FAT\ROTINA\DESCRICAO.PRW
+				Type=T
+			End
+			File \advpl\FAT\ROTINA\EXISTSC9.PRW
+				Type=T
+			End
+			File \advpl\FAT\ROTINA\EXISTSDC.PRW
+				Type=T
+			End
+			File \advpl\FAT\ROTINA\FATA0001.PRW
+				Type=T
+			End
+			File \advpl\FAT\ROTINA\FATA0002.PRW
+				Type=T
+			End
+			File \advpl\FAT\ROTINA\FATA0003.PRW
+				Type=T
+			End
+			File \advpl\FAT\ROTINA\FATA0004.PRW
+				Type=T
+			End
+			File \advpl\FAT\ROTINA\FATA0005.PRW
+				Type=T
+			End
+			File \advpl\FAT\ROTINA\FATA0006.PRW
+				Type=T
+			End
+			File \advpl\FAT\ROTINA\FATA0007.PRW
+				Type=T
+			End
+			File \advpl\FAT\ROTINA\FATA0008.PRW
+				Type=T
+			End
+			File \advpl\FAT\ROTINA\FATC0001.PRW
+				Type=T
+			End
+			File \advpl\FAT\ROTINA\FATC0002.PRW
+				Type=T
+			End
+			File \advpl\FAT\ROTINA\NOME.PRW
+				Type=T
+			End
+			File \advpl\FAT\ROTINA\RELEASEORDER.PRW
+				Type=T
+			End
+		End
+		Folder Outros
+			FilesCount=0
+		End
+	End
+	Project FIN
+		FoldersCount=3
+		Folder PONTO DE ENTRADA
+			FilesCount=2
+			File \advpl\FIN\PONTO DE ENTRADA\F240FIL_PE.PRW
+				Type=T
+			End
+			File \advpl\FIN\PONTO DE ENTRADA\F240TIT_PE.PRW
+				Type=T
+			End
+		End
+		Folder ROTINA
+			FilesCount=2
+			File \advpl\FIN\ROTINA\CODBARVL.PRX
+				Type=T
+			End
+			File \advpl\FIN\ROTINA\LINDIGVL.PRX
+				Type=T
+			End
+		End
+		Folder Outros
+			FilesCount=0
+		End
+	End
+	Project FIS
+		FoldersCount=2
+		Folder ROTINA
+			FilesCount=1
+			File \advpl\FIS\ROTINA\MNTSX521.PRW
+				Type=T
+			End
+		End
+		Folder Outros
+			FilesCount=0
+		End
+	End
+	Project NFE
+		FoldersCount=4
+		Folder PONTO DE ENTRADA
+			FilesCount=1
+			File \advpl\NFE\PONTO DE ENTRADA\PE01NFESEFAZ.PRW
+				Type=T
+			End
+		End
+		Folder RELATORIO
+			FilesCount=2
+			File \advpl\NFE\RELATORIO\DANFEII.PRW
+				Type=T
+			End
+			File \advpl\NFE\RELATORIO\DANFEIII.PRW
+				Type=T
+			End
+		End
+		Folder ROTINA
+			FilesCount=1
+			File \advpl\NFE\ROTINA\NFESEFAZ.PRW
+				Type=T
+			End
+		End
+		Folder Outros
+			FilesCount=0
+		End
+	End
+	Project PCP
+		FoldersCount=4
+		Folder PONTO DE ENTRADA
+			FilesCount=9
+			File \advpl\PCP\PONTO DE ENTRADA\A650OPI.PRW
+				Type=T
+			End
+			File \advpl\PCP\PONTO DE ENTRADA\MA650DC6.PRW
+				Type=T
+			End
+			File \advpl\PCP\PONTO DE ENTRADA\MA650FIL.PRW
+				Type=T
+			End
+			File \advpl\PCP\PONTO DE ENTRADA\MA720FIL.PRW
+				Type=T
+			End
+			File \advpl\PCP\PONTO DE ENTRADA\MT240TOK.PRW
+				Type=T
+			End
+			File \advpl\PCP\PONTO DE ENTRADA\MT241TOK.PRW
+				Type=T
+			End
+			File \advpl\PCP\PONTO DE ENTRADA\MTA241DOC.PRW
+				Type=T
+			End
+			File \advpl\PCP\PONTO DE ENTRADA\MTA650AE .PRW
+				Type=T
+			End
+			File \advpl\PCP\PONTO DE ENTRADA\MTA720A .PRW
+				Type=T
+			End
+		End
+		Folder RELATORIO
+			FilesCount=8
+			File \advpl\PCP\RELATORIO\ALRPCP01.PRW
+				Type=T
+			End
+			File \advpl\PCP\RELATORIO\ALRPCP02.PRW
+				Type=T
+			End
+			File \advpl\PCP\RELATORIO\ALRPCP03.PRW
+				Type=T
+			End
+			File \advpl\PCP\RELATORIO\ALRPCP04.PRW
+				Type=T
+			End
+			File \advpl\PCP\RELATORIO\ALRPCP05.PRW
+				Type=T
+			End
+			File \advpl\PCP\RELATORIO\ALRPCP06.PRW
+				Type=T
+			End
+			File \advpl\PCP\RELATORIO\ALRPCP07.PRW
+				Type=T
+			End
+			File \advpl\PCP\RELATORIO\ALRPCP08.PRW
+				Type=T
+			End
+		End
+		Folder ROTINA
+			FilesCount=5
+			File \advpl\PCP\ROTINA\ALAPCP01.PRW
+				Type=T
+			End
+			File \advpl\PCP\ROTINA\ALAPCP02.PRW
+				Type=T
+			End
+			File \advpl\PCP\ROTINA\ALAPCP03.PRW
+				Type=T
+			End
+			File \advpl\PCP\ROTINA\PCPA0001.PRW
+				Type=T
+			End
+			File \advpl\PCP\ROTINA\PCPC0001.PRW
+				Type=T
+			End
+		End
+		Folder Outros
+			FilesCount=0
+		End
+	End
+	Project UPDATE
+		FoldersCount=1
+		Folder Outros
+			FilesCount=2
+			File \advpl\UPDATE\MSGNFE.PRW
+				Type=T
+			End
+			File \advpl\UPDATE\UPDPCP.PRW
+				Type=T
+			End
+		End
+	End
+	Project WEBSERVICE
+		FoldersCount=1
+		Folder Outros
+			FilesCount=2
+			File \advpl\WEBSERVICE\WSPORTALALCAR.PRW
+				Type=T
+			End
+			File \advpl\WEBSERVICE\WSPORTALALCARSTRUCTS.PRW
+				Type=T
+			End
+		End
+	End
+End

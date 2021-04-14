@@ -1,0 +1,173 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<RTSZDocument>
+  <RoyalDocument>
+    <ID>37bb5bbf-a9a7-49b3-8e9e-7a7a5b885b80</ID>
+    <Modified>04/14/2021 17:00:53.327</Modified>
+    <ModifiedBy>danielbraga</ModifiedBy>
+    <Name>alcar</Name>
+    <Created>04/14/2021 13:32:30.453</Created>
+    <CreatedBy>danielbraga</CreatedBy>
+    <PositionNr>0</PositionNr>
+    <IsExpanded>True</IsExpanded>
+    <DocumentType>Workspace</DocumentType>
+    <CustomField11 />
+    <CustomField12 />
+    <CustomField13 />
+    <CustomField14 />
+    <CustomField15 />
+    <CustomField16 />
+    <CustomField17 />
+    <CustomField18 />
+    <CustomField19 />
+    <CustomField20 />
+    <CustomProperties />
+    <CredentialPassword />
+    <CredentialPassphrase />
+    <PasswordHash />
+    <AutoMergeOption>1</AutoMergeOption>
+    <SaveOption>2</SaveOption>
+    <FileName>/Users/danielbraga/Documents/Totvs/Clientes/Alcar/alcar.rtsz</FileName>
+  </RoyalDocument>
+  <RoyalTrash>
+    <ID>af4aeb0e-7553-4e88-9c89-a3cea17461fd</ID>
+    <Name>Trashcan</Name>
+    <Modified>04/14/2021 13:32:30.454</Modified>
+    <Created>04/14/2021 13:32:30.454</Created>
+    <ModifiedBy>danielbraga</ModifiedBy>
+    <CreatedBy>danielbraga</CreatedBy>
+    <PositionNr>2</PositionNr>
+    <IsExpanded>False</IsExpanded>
+    <ParentID>37bb5bbf-a9a7-49b3-8e9e-7a7a5b885b80</ParentID>
+    <CustomField11 />
+    <CustomField12 />
+    <CustomField13 />
+    <CustomField14 />
+    <CustomField15 />
+    <CustomField16 />
+    <CustomField17 />
+    <CustomField18 />
+    <CustomField19 />
+    <CustomField20 />
+    <CustomProperties />
+    <CredentialPassword />
+    <CredentialPassphrase />
+  </RoyalTrash>
+  <RoyalFolder>
+    <ID>89c3f08e-5b0c-46d6-9a6b-97d9686d5923</ID>
+    <Name>Connections</Name>
+    <Modified>04/14/2021 13:32:30.469</Modified>
+    <Created>04/14/2021 13:32:30.454</Created>
+    <ModifiedBy>danielbraga</ModifiedBy>
+    <CreatedBy>danielbraga</CreatedBy>
+    <PositionNr>4</PositionNr>
+    <IsExpanded>True</IsExpanded>
+    <ParentID>37bb5bbf-a9a7-49b3-8e9e-7a7a5b885b80</ParentID>
+    <ObjectSpecialUsage />
+    <CustomField11 />
+    <CustomField12 />
+    <CustomField13 />
+    <CustomField14 />
+    <CustomField15 />
+    <CustomField16 />
+    <CustomField17 />
+    <CustomField18 />
+    <CustomField19 />
+    <CustomField20 />
+    <CustomProperties />
+    <CredentialPassword />
+    <CredentialPassphrase />
+  </RoyalFolder>
+  <RoyalRDSConnection>
+    <ID>994d64bb-968d-4e4b-9991-3cb4fdd774eb</ID>
+    <Name>Protheus</Name>
+    <Modified>04/14/2021 13:33:35.284</Modified>
+    <Created>04/14/2021 13:33:01.013</Created>
+    <ModifiedBy>danielbraga</ModifiedBy>
+    <CreatedBy>danielbraga</CreatedBy>
+    <PositionNr>2</PositionNr>
+    <IsConnectionTemplate>False</IsConnectionTemplate>
+    <ParentID>89c3f08e-5b0c-46d6-9a6b-97d9686d5923</ParentID>
+    <ObjectSpecialUsage />
+    <URI>10.0.0.33</URI>
+    <CustomField11 />
+    <CustomField12 />
+    <CustomField13 />
+    <CustomField14 />
+    <CustomField15 />
+    <CustomField16 />
+    <CustomField17 />
+    <CustomField18 />
+    <CustomField19 />
+    <CustomField20 />
+    <CustomProperties />
+    <CredentialPassword>RXTa0ufeHaqVOumHZMltkyTaqweunZrzGSRa7QeKdRKFhqpujNfClJ1N/bthp3W+y+Kl6aEKm3MjPqe2QnoqMVs83rUnsJ3emPSTX8HaJO8=</CredentialPassword>
+    <CredentialPassphrase />
+    <GatewayPassword />
+    <ProxyPassword />
+    <RDPPort>3389</RDPPort>
+    <Description />
+    <PhysicalAddress />
+    <CustomImageName />
+    <CustomImageList>{}</CustomImageList>
+    <CustomImage />
+    <ColorFromParent>False</ColorFromParent>
+    <Color />
+    <CredentialFromParent>False</CredentialFromParent>
+    <CredentialMode>2</CredentialMode>
+    <CredentialAutologon>True</CredentialAutologon>
+    <CredentialOmitDomain>False</CredentialOmitDomain>
+    <CredentialUsername>Administrator</CredentialUsername>
+    <CredentialName />
+    <Favorite>False</Favorite>
+  </RoyalRDSConnection>
+  <RoyalFolder>
+    <ID>848b00b7-28cf-4c20-a4d6-430fb0d1d79b</ID>
+    <Name>Credentials</Name>
+    <Modified>04/14/2021 13:32:30.474</Modified>
+    <Created>04/14/2021 13:32:30.472</Created>
+    <ModifiedBy>danielbraga</ModifiedBy>
+    <CreatedBy>danielbraga</CreatedBy>
+    <PositionNr>6</PositionNr>
+    <IsExpanded>False</IsExpanded>
+    <ParentID>37bb5bbf-a9a7-49b3-8e9e-7a7a5b885b80</ParentID>
+    <ObjectSpecialUsage />
+    <CustomField11 />
+    <CustomField12 />
+    <CustomField13 />
+    <CustomField14 />
+    <CustomField15 />
+    <CustomField16 />
+    <CustomField17 />
+    <CustomField18 />
+    <CustomField19 />
+    <CustomField20 />
+    <CustomProperties />
+    <CredentialPassword />
+    <CredentialPassphrase />
+  </RoyalFolder>
+  <RoyalFolder>
+    <ID>4eea8524-b430-4667-ad17-2434c794bd60</ID>
+    <Name>Tasks</Name>
+    <Modified>04/14/2021 13:32:30.476</Modified>
+    <Created>04/14/2021 13:32:30.474</Created>
+    <ModifiedBy>danielbraga</ModifiedBy>
+    <CreatedBy>danielbraga</CreatedBy>
+    <PositionNr>8</PositionNr>
+    <IsExpanded>False</IsExpanded>
+    <ParentID>37bb5bbf-a9a7-49b3-8e9e-7a7a5b885b80</ParentID>
+    <ObjectSpecialUsage />
+    <CustomField11 />
+    <CustomField12 />
+    <CustomField13 />
+    <CustomField14 />
+    <CustomField15 />
+    <CustomField16 />
+    <CustomField17 />
+    <CustomField18 />
+    <CustomField19 />
+    <CustomField20 />
+    <CustomProperties />
+    <CredentialPassword />
+    <CredentialPassphrase />
+  </RoyalFolder>
+</RTSZDocument>

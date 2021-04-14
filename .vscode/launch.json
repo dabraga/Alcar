@@ -7,9 +7,37 @@
 			"name": "TOTVS Language Debug",
 			"program": "${command:AskForProgramName}",
 			"cwb": "${workspaceFolder}",
-			"smartclientBin": "C:/totvs/bin/smartclient/smartclient.exe",
+			"smartclientBin": "/Users/danielbraga/Documents/Totvs/smartclient/smartclient_old.app/Contents/MacOS/smartclient",
 			"isMultiSession": true,
 			"enableTableSync": true
 		}
-	]
+	],
+	"lastPrograms": [
+		{
+			"args": [],
+			"label": "u_rdquente",
+			"description": ""
+		},
+		{
+			"args": [],
+			"label": "sigaadv",
+			"description": ""
+		},
+		{
+			"args": [],
+			"label": "apsdu",
+			"description": ""
+		},
+		{
+			"args": [],
+			"label": "SIGAFAT",
+			"description": ""
+		},
+		{
+			"args": [],
+			"label": "sigapcp",
+			"description": ""
+		}
+	],
+	"lastProgramExecuted": "sigapcp"
 }

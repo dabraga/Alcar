@@ -290,3 +290,15 @@ static function setMsgError(oModel)
 	cResp += "Id do campo de erro: " 		+ StrTran( StrTran( AllToChar(aMsgErro[4]), "<", "" ), "-", "" ) + (" ")
 	cResp += "Id do erro: " 				+ StrTran( StrTran( AllToChar(aMsgErro[5]), "<", "" ), "-", "" ) + (" ")
 return  cResp
+
+user function gatB1PSVL()
+
+    dbSelectArea("SB1")
+    SB1->(dbSetOrder(1))
+    if SB1->(dbSeek(xFilial('SB1')+fwFldGet('Z10_CODMAT')))
+        if SB1->(fieldPos("B1_ZZPSVL")) > 0 
+            return SB1->B1_ZZPSVL
+        endIf
+    endIf
+
+return 0
